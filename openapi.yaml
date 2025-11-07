@@ -1,0 +1,251 @@
+openapi: 3.0.4
+info:
+  title: Mlog API
+  description: Simple (or not) API for managing blogs based on the OpenAPI 3.0 specification
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000
+
+paths:
+  /api/v1/blogs:
+    get:
+      summary: Returns list of all blogs
+      description: Returns list of all blogs
+      tags:
+        - blogs
+      responses:
+        "200":
+          description: A JSON array of blogs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/blogResponse"
+    post:
+      summary: Creates a new blog
+      tags:
+        - blogs
+      requestBody:
+        description: Parameters for new blog
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/blogCreateRequest"
+      responses:
+        "201":
+          description: blog created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/blogResponse"
+        "400":
+          description: Missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Resource already existed
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/v1/blogs/{blog_id}:
+    parameters:
+      - name: blog_id
+        in: path
+        description: blog's id
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      summary: Getting blog by id
+      tags:
+        - blogs
+      responses:
+        "200":
+          description: blog found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/blogResponse"
+        "404":
+          description: blog not found
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Edit a blog using id
+      tags:
+        - blogs
+      requestBody:
+        description: Describe blog to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/blogCreateRequest"
+      responses:
+        "200":
+          description: blog edited successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/blogResponse"
+        "400":
+          description: Missing required fields
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: blog not found
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    patch:
+      summary: Edit a blog using id
+      tags:
+        - blogs
+      requestBody:
+        description: Describe blog to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/blogPatchRequest"
+      responses:
+        "200":
+          description: blog edited successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/blogResponse"
+        "400":
+          description: Missing required fields
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: blog not found
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete blog using id
+      tags:
+        - blogs
+      responses:
+        "204":
+          description: Deleted successfully
+          content:
+            application/json:
+              schema:
+                type: string
+
+components:
+  schemas:
+    blogResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: blog's id, autoincrement
+          example: 1
+        name:
+          type: string
+          description: blog's name
+          example: Dell precision 5540 laptop
+        description: 
+          type: string
+          description: blog's description
+          example: Dell workstation, i7 9th generation
+        price:
+          type: number
+          description: blog's price
+          example: 999.99
+        sku: 
+          type: string
+          description: blog's sku
+          example: LP-XYZ-001
+        quantity:
+          type: integer
+          description: blog's quantity
+          example: 100
+        created_at:
+          type: integer
+          description: When the blog was added to database
+          example: 102983902181
+        updated_at:
+          type: integer
+          description: When the blog was last modified
+          example: 102983902183
+
+    blogCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: blog's name
+          example: Dell precision 5540 laptop
+        description: 
+          type: string
+          description: blog's description
+          example: Dell workstation, i7 9th generation
+        price:
+          type: number
+          description: blog's price
+          example: 999.99
+        sku: 
+          type: string
+          description: blog's sku
+          example: LP-XYZ-001
+        quantity:
+          type: integer
+          description: blog's quantity
+          example: 100
+      required:
+        - name
+        - price
+        - quantity
+
+    blogPatchRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: blog's name
+          example: Dell precision 5540 laptop
+        description: 
+          type: string
+          description: blog's description
+          example: Dell workstation, i7 9th generation
+        price:
+          type: number
+          description: blog's price
+          example: 999.99
+        sku: 
+          type: string
+          description: blog's sku
+          example: LP-XYZ-001
+        quantity:
+          type: integer
+          description: blog's quantity
+          example: 100
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: String representation of the error that occurred
+          example: blog's price is missing
