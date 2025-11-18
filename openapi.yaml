@@ -1,7 +1,7 @@
-openapi: 3.0.4
+openapi: 3.1.0
 info:
   title: Mlog API
-  description: Simple (or not) API for managing blogs based on the OpenAPI 3.0 specification
+  description: API Gateway for Blog Microservices (Content, Engagement)
   version: 1.0.0
 
 servers:
@@ -12,6 +12,7 @@ paths:
   /api/v1/users:
     get:
       summary: Get all users
+      tags: [users]
       responses: 
         "200":
           description:
@@ -24,6 +25,7 @@ paths:
   /api/v1/users/{user_id}:
     get:
       summary: Get a specific user with the user_id
+      tags: [users]
       responses: 
         "200":
           description:
@@ -34,6 +36,7 @@ paths:
   /api/v1/users/me:
     get:
       summary: Get my user info
+      tags: [users]
       responses: 
         "200":
           description:
@@ -44,6 +47,7 @@ paths:
   /api/v1/users/{user_id}/followers:
     get:
       summary: Get all of user_id's all users
+      tags: [users]
       responses: 
         "200":
           description:
@@ -56,6 +60,7 @@ paths:
   /api/v1/users/{user_id}/followings:
     get:
       summary: Get all users who user_id follows
+      tags: [users]
       responses: 
         "200":
           description:
@@ -72,8 +77,7 @@ paths:
   /api/v1/auth:
     get: 
       summary: Redirect to Keycloak account management page 
-      tags:
-        - keycloak
+      tags: [keycloak]
       responses: 
         '302': 
           description: Redirect to Keycloak
@@ -83,16 +87,14 @@ paths:
   /api/v1/auth/login:
     get:
       summary: Redirect user to Keycloak for login
-      tags:
-        - keycloak
+      tags: [keycloak]
       responses:
         '302':
           description: Redirect to Keycloak login page
   /api/v1/auth/callback:
     get:
       summary: OAuth2 callback endpoint for Keycloak
-      tags:
-        - keycloak
+      tags: [keycloak]
       parameters:
         - in: query
           name: code
@@ -103,24 +105,21 @@ paths:
   /api/v1/auth/logout:
     get:
       summary: Logout user and end Keycloak session
-      tags:
-        - keycloak
+      tags: [keycloak]
       responses:
         '302':
           description: Redirect to Keycloak logout page
   /api/v1/auth/register:
     get:
       summary: Redirect to Keycloak registration page
-      tags:
-        - keycloak
+      tags: [keycloak]
       responses:
         '302':
           description: Redirect to Keycloak
   /api/v1/auth/password/reset:
     get:
       summary: Redirect to Keycloak password reset page
-      tags:
-        - keycloak
+      tags: [keycloak]
       responses:
         '302':
           description: Redirect to Keycloak
@@ -130,6 +129,7 @@ paths:
   /api/v1/admin/users/{user_id}/ban:
     post:
       summary: Ban user with user_id
+      tags: [admin]
       parameters:
         - in: path
           name: user_id
@@ -156,6 +156,7 @@ paths:
   /api/v1/admin/users/{user_id}/unban:
     post:
       summary: Unban user with user_id
+      tags: [admin]
       parameters:
         - in: path
           name: user_id
@@ -183,96 +184,75 @@ paths:
 
 
 
+  # ==========================================
+  # BLOG SERVICE (Content Management)
+  # ==========================================
   /api/v1/blogs:
     get:
       summary: Returns list of all blogs
-      description: Returns list of all blogs
-      tags:
-        - blogs
+      tags: [blogs]
       responses:
         "200":
-          description: A JSON array of blogs
+          description: List of blogs
           content:
             application/json:
               schema:
                 type: array
-                items:
-                  $ref: "#/components/schemas/userResponse"
+                items: { $ref: "#/components/schemas/blogResponse" }
     post:
       summary: Creates a new blog
-      tags:
-        - blogs
+      tags: [blogs]
       requestBody:
-        description: Parameters for new blog
         required: true
         content:
           application/json:
-            schema:
-              $ref: "#/components/schemas/blogCreateRequest"
+            schema: { $ref: "#/components/schemas/blogCreateRequest" }
       responses:
         "201":
-          description: blog created successfully
+          description: Blog created
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/userResponse"
+              schema: { $ref: "#/components/schemas/blogResponse" }
         "400":
-          description: Missing required fields
+          description: Bad request
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "409":
-          description: Resource already existed
-          content: 
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+              schema: { $ref: "#/components/schemas/Error" }
 
   /api/v1/blogs/{blog_id}:
     parameters:
       - name: blog_id
         in: path
-        description: blog's id
         required: true
-        schema:
-          type: integer
-          format: int64
+        schema: { type: integer, format: int64 }
     get:
       summary: Getting blog by id
-      tags:
-        - blogs
+      tags: [blogs]
       responses:
         "200":
-          description: blog found
+          description: Blog found
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/userResponse"
+              schema: { $ref: "#/components/schemas/blogResponse" }
         "404":
-          description: blog not found
-          content: 
+          description: Blog not found
+          content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+              schema: { $ref: "#/components/schemas/Error" }
     put:
       summary: Edit a blog using id
-      tags:
-        - blogs
+      tags: [blogs]
       requestBody:
-        description: Describe blog to be edited
         required: true
         content:
           application/json:
-            schema:
-              $ref: "#/components/schemas/blogCreateRequest"
+            schema: { $ref: "#/components/schemas/blogCreateRequest" }
       responses:
         "200":
-          description: blog edited successfully
+          description: Blog updated successfully
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/userResponse"
+              schema: { $ref: "#/components/schemas/blogResponse" }
         "400":
           description: Missing required fields
           content: 
@@ -287,22 +267,18 @@ paths:
                 $ref: "#/components/schemas/Error"
     patch:
       summary: Edit a blog using id
-      tags:
-        - blogs
+      tags: [blogs]
       requestBody:
-        description: Describe blog to be edited
         required: true
         content:
           application/json:
-            schema:
-              $ref: "#/components/schemas/blogPatchRequest"
+            schema: { $ref: "#/components/schemas/blogPatchRequest" }
       responses:
         "200":
-          description: blog edited successfully
+          description: Blog patched successfully
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/userResponse"
+              schema: { $ref: "#/components/schemas/blogResponse" }
         "400":
           description: Missing required fields
           content: 
@@ -317,15 +293,250 @@ paths:
                 $ref: "#/components/schemas/Error"
     delete:
       summary: Delete blog using id
-      tags:
-        - blogs
+      tags: [blogs]
       responses:
         "204":
           description: Deleted successfully
+
+  # ==========================================
+  # ENGAGEMENT SERVICE - COMMENTS
+  # ==========================================
+
+  /api/v1/posts/{post_id}/comments:
+    get:
+      tags: [comments]
+      summary: Get root comment for a post
+      description: |
+        Fetches only top-level comments (parentId = null). 
+        Use `replyCount` in response to decide whether to fetch replies.
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+        - name: cursor
+          in: query
+          description: ID/Time cursor for pagination
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10 }
+      responses:
+        '200':
+          description: List of comments
           content:
             application/json:
-              schema:
-                type: string
+              schema: { $ref: '#/components/schemas/CommentListResponse' }
+  
+  /api/v1/comments:
+    post:
+      tags: [comments]
+      summary: Create a comment or reply
+      description: Send `parentId` to reply, leave null for root comment.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CommentCreateRequest' }
+      responses:
+        '201':
+          description: Comment created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommentResponse' }
+
+  /api/v1/comments/{comment_id}:
+    put: 
+      tags: [comments]
+      summary: Update comment content
+      description: User can only edit the content, not the postId or parentId.
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CommentUpdateRequest' }
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommentResponse' }
+        '403':
+          description: Not authorized to edit this comment
+    
+    delete:
+      tags: [comments]
+      summary: Soft delete a comment
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204':
+          description: Deleted
+
+  /api/v1/comments/{comment_id}/replies:
+    get:
+      tags: [comments]
+      summary: Get replies of a comment (Lazy loading)
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: cursor
+          in: query
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 5 }
+      responses:
+        '200':
+          description: List of replies
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommentListResponse' }
+
+  # ==========================================
+  # ENGAGEMENT SERVICE - LIKES (POST INTEGRATION)
+  # ==========================================
+
+  /api/v1/posts/{post_id}/likes:
+    get:
+      tags: [likes]
+      summary: Get list of users who liked the post
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: List of users who liked the post
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserListResponse' }
+    
+    post:
+      tags: [likes]
+      summary: Like a post
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '201':
+          description: Liked successfully
+        '409':
+          description: Already liked
+
+    delete:
+      tags: [likes]
+      summary: Unlike a post
+      parameters:
+        - name: post_id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '204':
+          description: Unliked successfully
+
+  # ==========================================
+  # ENGAGEMENT SERVICE - USER FOLLOWS (NEW)
+  # ==========================================
+  
+  /api/v1/users/{target_user_id}/follow:
+    post:
+      tags: [follows]
+      summary: Follow a user (author)
+      description: |
+        Action: Current logged-in user follows `target_user_id`.
+        Use case: Use this when clicking "Follow" on a Profile or on a Post (get authorId from post data).
+      parameters:
+        - name: target_user_id
+          in: path
+          required: true
+          schema: { type: integer }
+          description: The ID of the user/author to follow
+      responses:
+        '204': 
+          description: Followed successfully
+        '400':
+          description: Cannot follow yourself
+        '409':
+          description: Already following
+
+    delete:
+      tags: [follows]
+      summary: Unfollow a user
+      parameters:
+        - name: target_user_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': 
+          description: Unfollowed successfully
+
+  /api/v1/users/{user_id}/followers:
+    get:
+      tags: [follows]
+      summary: Get list of followers
+      description: List of people who are following `user_id`.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: List of followers
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserListResponse' }
+
+  /api/v1/users/{user_id}/following:
+    get:
+      tags: [follows]
+      summary: Get list of following
+      description: List of people that `user_id` is following.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: List of people being followed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserListResponse' }
 
 components:
   schemas:
@@ -392,62 +603,99 @@ components:
           description: When the user info was last modified
           example: date-time
 
-    blogCreateRequest:
+    # --- BLOG SCHEMAS ---
+    blogResponse:
       type: object
       properties:
-        name:
-          type: string
-          description: blog's name
-          example: Dell precision 5540 laptop
-        description: 
-          type: string
-          description: blog's description
-          example: Dell workstation, i7 9th generation
-        price:
-          type: number
-          description: blog's price
-          example: 999.99
-        sku: 
-          type: string
-          description: blog's sku
-          example: LP-XYZ-001
-        quantity:
-          type: integer
-          description: blog's quantity
-          example: 100
-      required:
-        - name
-        - price
-        - quantity
-
+        id: { type: integer, example: 1 }
+        name: { type: string, example: Dell precision 5540 }
+        description: { type: string }
+        price: { type: number }
+        sku: { type: string }
+        quantity: { type: integer }
+        created_at: { type: integer }
+        updated_at: { type: integer }
+    blogCreateRequest:
+      type: object
+      required: [name, price, quantity]
+      properties:
+        name: { type: string }
+        description: { type: string }
+        price: { type: number }
+        sku: { type: string }
+        quantity: { type: integer }
     blogPatchRequest:
       type: object
       properties:
-        name:
-          type: string
-          description: blog's name
-          example: Dell precision 5540 laptop
-        description: 
-          type: string
-          description: blog's description
-          example: Dell workstation, i7 9th generation
-        price:
-          type: number
-          description: blog's price
-          example: 999.99
-        sku: 
-          type: string
-          description: blog's sku
-          example: LP-XYZ-001
-        quantity:
-          type: integer
-          description: blog's quantity
-          example: 100
-
+        name: { type: string }
+        description: { type: string }
+        price: { type: number }
+        sku: { type: string }
+        quantity: { type: integer }
     Error:
       type: object
       properties:
-        error:
-          type: string
-          description: String representation of the error that occurred
-          example: blog's price is missing
+        error: { type: string }
+
+    # --- ENGAGEMENT SCHEMAS ---
+    UserSummary:
+      type: object
+      properties:
+        id: { type: integer }
+        username: { type: string }
+        avatarUrl: { type: string, nullable: true }
+    
+    # [NEW] Dùng chung cho response trả về danh sách user (Likes, Followers, Following)
+    UserListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/UserSummary' }
+        meta:
+          type: object
+          properties:
+            total: { type: integer }
+            page: { type: integer }
+            limit: { type: integer }
+            totalPages: { type: integer }
+
+    CommentCreateRequest:
+      type: object
+      required: [postId, content]
+      properties:
+        postId: { type: integer, format: int64 }
+        parentId: { type: string, format: uuid, nullable: true }
+        content: { type: string, minLength: 1, maxLength: 2000 }
+
+    CommentUpdateRequest:
+      type: object
+      required: [content]
+      properties:
+        content: { type: string, minLength: 1, maxLength: 2000 }
+
+    CommentResponse:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        postId: { type: integer, format: int64 }
+        parentId: { type: string, format: uuid, nullable: true }
+        content: { type: string }
+        user: { $ref: '#/components/schemas/UserSummary' }
+        likeCount: { type: integer, default: 0 }
+        replyCount: { type: integer, default: 0 }
+        isLiked: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    CommentListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/CommentResponse' }
+        meta:
+          type: object
+          properties:
+            nextCursor: { type: string, nullable: true }
+            limit: { type: integer }
