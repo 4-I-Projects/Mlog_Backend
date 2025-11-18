@@ -1,0 +1,95 @@
+version: "3.7"
+
+services:
+  keycloak:
+  #   image: 10.60.156.72/docker.io/keycloak/keycloak
+    image: quay.io/keycloak/keycloak:26.3.1
+    container_name: keycloak
+    # command: start-dev
+    environment:
+  #     #KC_HOSTNAME: ${KC_HOSTNAME}
+  #     KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT}
+  #     KC_HTTP_ENABLED: true
+  #     KC_HOSTNAME_STRICT_HTTPS: false
+  #     KC_HEALTH_ENABLED: true
+  #     KEYCLOAK_ADMIN: ${KC_ADMIN}
+  #     KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
+  #     KC_DB: mariadb
+  #     KC_DB_URL: jdbc:mariadb://${MARIADB_ADDR}/keycloak?createDatabaseIfNotExist=true&characterEncoding=UTF-8
+  #     KC_DB_USERNAME: ${MARIADB_USERNAME}
+  #     KC_DB_PASSWORD: ${MARIADB_PASSWORD}
+  #     KC_TRANSACTION_XA_ENABLED: true
+    ports:
+      - 8080:8080
+    restart: always
+    networks:
+      - mlog 
+
+  # opal-server:
+  #   image: permitio/opal-server
+  #   container_name: opal-server
+  #   environment:
+  #     - OPAL_BROADCAST_URI=kafka://10.0.0.41:9092,10.0.0.86:9092,10.0.0.99:9092
+  #     - UVICORN_NUM_WORKERS=2
+  #     - OPAL_POLICY_REPO_URL=https://github.com/trantuananh1/test-opa.git
+  #     - OPAL_POLICY_REPO_WEBHOOK_SECRET=OQ3M81ECbeJEIka4MhgPalSbxVLLe91GBZyiVtPEUsM
+  #     - OPAL_DATA_CONFIG_SOURCES={"external_source_url":"http://117.5.151.111:8081/v2/pdps/data/config"}
+  #     - OPAL_LOG_FORMAT_INCLUDE_PID=true
+  #   ports:
+  #     - "7002:7002"
+  #   networks:
+  #     - mlog
+
+  # mlog-pdp:
+  #   image: trantuananh1/mlog-pdp
+  #   container_name: mlog-pdp
+  #   environment:
+  #     - OPAL_SERVER_URL=http://117.5.151.111:7002
+  #     - OPAL_LOG_FORMAT_INCLUDE_PID=true
+  #     - OPAL_INLINE_OPA_LOG_FORMAT=http
+  #     - PDP_API_KEY=mlog_41e28b6430544a13930561a4b3f305f8
+  #     - PDP_CONTROL_PLANE=http://117.5.151.111:8081
+  #     - PDP_BACKEND_SERVICE_URL=http://117.5.151.111:8081/v2
+  #   ports:
+  #     - "7766:7000"
+  #     - "8181:8181"
+  #   #    depends_on:
+  #   #      - opal-server
+  #   networks:
+  #     - mlog
+  #   command: sh -c "exec ./start.sh"
+
+  # mlog-be:
+  #   image: 10.60.156.72/mlog/vauthz-be
+  #   container_name: mlog-be
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - '8081:8081'
+  #   networks:
+  #     - mlog
+  #   volumes:
+  #     - ./policyrepo:/policyrepo
+  # redis:
+  #   image: redis:7.4.2
+  #   container_name: redis
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - mlog
+  # debezium:
+  #   image: debezium/connect:2.7.1.Final
+  #   container_name: debezium
+  #   ports:
+  #     - "8083:8083"
+  #   environment:
+  #     - BOOTSTRAP_SERVERS=10.60.158.157:9092
+  #     - GROUP_ID=12345
+  #     - CONFIG_STORAGE_TOPIC=debezium_connect_configs
+  #     - OFFSET_STORAGE_TOPIC=debezium_connect_offsets
+  #     - STATUS_STORAGE_TOPIC=debezium_connect_statuses
+  #   networks:
+  #     - mlog
+networks:
+  mlog:
+    driver: bridge
