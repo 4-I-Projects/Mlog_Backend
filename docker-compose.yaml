@@ -1,6 +1,25 @@
 version: "3.7"
 
 services:
+  apisix:
+    image: apache/apisix:3.9.1-debian
+    volumes:
+      - ./conf/apisix/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+    depends_on:
+      - etcd
+    ports:
+      - "9080:9080"
+      - "9180:9180"
+      - "9091:9091"
+
+  apisix-dashboard:
+    image: apache/apisix-dashboard:3.0.1-centos
+    volumes:
+    - ./conf/dashboard/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
+    depends_on:
+      - apisix
+    ports:
+    - "9000:9000"
   keycloak:
   #   image: 10.60.156.72/docker.io/keycloak/keycloak
     image: quay.io/keycloak/keycloak:26.3.1

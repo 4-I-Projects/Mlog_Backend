@@ -12,6 +12,7 @@ paths:
   /api/v1/users:
     get:
       summary: Get all users
+      operationId: listAllUsers
       tags: [users]
       responses: 
         "200":
@@ -25,7 +26,13 @@ paths:
   /api/v1/users/{user_id}:
     get:
       summary: Get a specific user with the user_id
+      operationId: getUser 
       tags: [users]
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema: { type: string }
       responses: 
         "200":
           description:
@@ -36,6 +43,7 @@ paths:
   /api/v1/users/me:
     get:
       summary: Get my user info
+      operationId: getCurrentUser
       tags: [users]
       responses: 
         "200":
@@ -44,32 +52,64 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/userResponse"
-  /api/v1/users/{user_id}/followers:
-    get:
-      summary: Get all of user_id's all users
-      tags: [users]
-      responses: 
+
+
+  # some basic admin routes
+  /api/v1/admin/users/{user_id}/ban:
+    post:
+      summary: Ban user with user_id
+      operationId: banUser
+      tags: [admin]
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema: 
+            type: string
+      requestBody:
+        description: Informations about why the user is banned
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: The reason for banning the user
+              required:
+                - reason
+      responses:
         "200":
-          description:
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/userResponse"
-  /api/v1/users/{user_id}/followings:
-    get:
-      summary: Get all users who user_id follows
-      tags: [users]
-      responses: 
+          description: User banned successfully
+
+  /api/v1/admin/users/{user_id}/unban:
+    post:
+      summary: Unban user with user_id
+      operationId: unbanUser
+      tags: [admin]
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema: 
+            type: string
+      requestBody:
+        description: Informations about why the user is unbanned
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: The reason for unbanning the user
+              required:
+                - reason
+      responses:
         "200":
-          description:
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/userResponse"
+          description: User unbanned successfully
 
 
 
@@ -123,62 +163,6 @@ paths:
       responses:
         '302':
           description: Redirect to Keycloak
-
-
-  # some basic admin routes
-  /api/v1/admin/users/{user_id}/ban:
-    post:
-      summary: Ban user with user_id
-      tags: [admin]
-      parameters:
-        - in: path
-          name: user_id
-          required: true
-          schema: 
-            type: string
-      requestBody:
-        description: Informations about why the user is banned
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                reason:
-                  type: string
-                  description: The reason for banning the user
-              required:
-                - reason
-      responses:
-        "200":
-          description: User banned successfully
-
-  /api/v1/admin/users/{user_id}/unban:
-    post:
-      summary: Unban user with user_id
-      tags: [admin]
-      parameters:
-        - in: path
-          name: user_id
-          required: true
-          schema: 
-            type: string
-      requestBody:
-        description: Informations about why the user is unbanned
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                reason:
-                  type: string
-                  description: The reason for unbanning the user
-              required:
-                - reason
-      responses:
-        "200":
-          description: User unbanned successfully
 
 
 
@@ -564,11 +548,11 @@ components:
           description: Profile picture for the blog.
           example: https://ipfs.io/ipfs/QmQA66xJFVcP5h8fs1PJt3fXeGwVPB55Q6o8PwEx1Jc2kz
         created_at:
-          type: string
+          type: date-time
           description: When the user created their account
           example: date-time
         updated_at:
-          type: string
+          type: date-time
           description: When the user info was last modified
           example: date-time
     roleResponse:
