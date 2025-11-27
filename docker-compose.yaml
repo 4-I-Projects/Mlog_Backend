@@ -20,6 +20,7 @@ services:
       - apisix
     ports:
     - "9000:9000"
+
   keycloak:
   #   image: 10.60.156.72/docker.io/keycloak/keycloak
     image: quay.io/keycloak/keycloak:26.3.1
@@ -44,6 +45,11 @@ services:
     networks:
       - mlog 
 
+  opa:
+    image: openpolicyagent/opa
+    ports:
+      - "8181:8181"
+
   # opal-server:
   #   image: permitio/opal-server
   #   container_name: opal-server
@@ -59,28 +65,9 @@ services:
   #   networks:
   #     - mlog
 
-  # mlog-pdp:
-  #   image: trantuananh1/mlog-pdp
-  #   container_name: mlog-pdp
-  #   environment:
-  #     - OPAL_SERVER_URL=http://117.5.151.111:7002
-  #     - OPAL_LOG_FORMAT_INCLUDE_PID=true
-  #     - OPAL_INLINE_OPA_LOG_FORMAT=http
-  #     - PDP_API_KEY=mlog_41e28b6430544a13930561a4b3f305f8
-  #     - PDP_CONTROL_PLANE=http://117.5.151.111:8081
-  #     - PDP_BACKEND_SERVICE_URL=http://117.5.151.111:8081/v2
-  #   ports:
-  #     - "7766:7000"
-  #     - "8181:8181"
-  #   #    depends_on:
-  #   #      - opal-server
-  #   networks:
-  #     - mlog
-  #   command: sh -c "exec ./start.sh"
-
-  # mlog-be:
-  #   image: 10.60.156.72/mlog/vauthz-be
-  #   container_name: mlog-be
+  # user_service:
+  #   build: ./services/user
+  #   container_name: user_service
   #   env_file:
   #     - .env
   #   ports:
@@ -88,7 +75,7 @@ services:
   #   networks:
   #     - mlog
   #   volumes:
-  #     - ./policyrepo:/policyrepo
+  #
   # redis:
   #   image: redis:7.4.2
   #   container_name: redis
@@ -96,19 +83,14 @@ services:
   #     - "6379:6379"
   #   networks:
   #     - mlog
-  # debezium:
-  #   image: debezium/connect:2.7.1.Final
-  #   container_name: debezium
-  #   ports:
-  #     - "8083:8083"
-  #   environment:
-  #     - BOOTSTRAP_SERVERS=10.60.158.157:9092
-  #     - GROUP_ID=12345
-  #     - CONFIG_STORAGE_TOPIC=debezium_connect_configs
-  #     - OFFSET_STORAGE_TOPIC=debezium_connect_offsets
-  #     - STATUS_STORAGE_TOPIC=debezium_connect_statuses
-  #   networks:
-  #     - mlog
+
+  prometheus:
+    image: "prom/prometheus"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
 networks:
   mlog:
     driver: bridge

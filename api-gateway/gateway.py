@@ -2,13 +2,13 @@ from flask import Flask, request, jsonify, redirect, make_response
 import requests
 import base64
 import uuid
-from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
+# from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = 'super-secret'
-jwt = JWTManager(app)
-client_secret = 'anYHIHahFveYzcQA5UwiHH7w0hmmo4cH'
-idp_url = 'http://192.168.100.102:8080'
+# jwt = JWTManager(app)
+client_secret = 't5MnvsslIyEf8tgHyfhwxaUpqTwxFHzu'
+idp_url = 'http://localhost:8080'
 
 sessions = {}
 
