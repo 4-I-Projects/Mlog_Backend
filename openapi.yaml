@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Mlog API
-  description: API Gateway for Blog Microservices (Content, Engagement)
+  description: API Gateway for post Microservices (Content, Engagement)
   version: 1.0.0
 
 servers:
@@ -15,55 +15,60 @@ paths:
       tags: [users]
       responses: 
         "200":
-          description:
+          description: get all users
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/userResponse"
+                  
   /api/v1/users/{user_id}:
     get:
       summary: Get a specific user with the user_id
       tags: [users]
       responses: 
         "200":
-          description:
+          description: Get a specific user with the user_id
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/userResponse"
+                
   /api/v1/users/me:
     get:
       summary: Get my user info
       tags: [users]
       responses: 
         "200":
-          description:
+          description: Get my user info
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/userResponse"
-  /api/v1/users/{user_id}/followers:
-    get:
-      summary: Get all of user_id's all users
-      tags: [users]
-      responses: 
-        "200":
-          description:
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/userResponse"
+
+  # duplicated route, see this endpoint below in engagement service section, safe to delete               
+  # /api/v1/users/{user_id}/followers:
+  #   get:
+  #     summary: Get all of user_id's all users
+  #     tags: [users]
+  #     responses: 
+  #       "200":
+  #         description: Get all of user_id's followers
+  #         content:
+  #           application/json: 
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: "#/components/schemas/userResponse"
+
   /api/v1/users/{user_id}/followings:
     get:
       summary: Get all users who user_id follows
       tags: [users]
       responses: 
         "200":
-          description:
+          description: Get all users who user_id follows
           content:
             application/json:
               schema:
@@ -185,74 +190,74 @@ paths:
 
 
   # ==========================================
-  # BLOG SERVICE (Content Management)
+  # post SERVICE (Content Management)
   # ==========================================
-  /api/v1/blogs:
+  /api/v1/posts:
     get:
-      summary: Returns list of all blogs
-      tags: [blogs]
+      summary: Returns list of all posts
+      tags: [posts]
       responses:
         "200":
-          description: List of blogs
+          description: List of posts
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/blogResponse" }
+                items: { $ref: "#/components/schemas/postResponse" }
     post:
-      summary: Creates a new blog
-      tags: [blogs]
+      summary: Creates a new post
+      tags: [posts]
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/blogCreateRequest" }
+            schema: { $ref: "#/components/schemas/postCreateRequest" }
       responses:
         "201":
-          description: Blog created
+          description: post created
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/blogResponse" }
+              schema: { $ref: "#/components/schemas/postResponse" }
         "400":
           description: Bad request
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
 
-  /api/v1/blogs/{blog_id}:
+  /api/v1/posts/{post_id}:
     parameters:
-      - name: blog_id
+      - name: post_id
         in: path
         required: true
         schema: { type: integer, format: int64 }
     get:
-      summary: Getting blog by id
-      tags: [blogs]
+      summary: Getting post by id
+      tags: [posts]
       responses:
         "200":
-          description: Blog found
+          description: post found
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/blogResponse" }
+              schema: { $ref: "#/components/schemas/postResponse" }
         "404":
-          description: Blog not found
+          description: post not found
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
     put:
-      summary: Edit a blog using id
-      tags: [blogs]
+      summary: Edit a post using id
+      tags: [posts]
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/blogCreateRequest" }
+            schema: { $ref: "#/components/schemas/postCreateRequest" }
       responses:
         "200":
-          description: Blog updated successfully
+          description: post updated successfully
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/blogResponse" }
+              schema: { $ref: "#/components/schemas/postResponse" }
         "400":
           description: Missing required fields
           content: 
@@ -260,25 +265,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
         "404":
-          description: blog not found
+          description: post not found
           content: 
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
     patch:
-      summary: Edit a blog using id
-      tags: [blogs]
+      summary: Edit a post using id
+      tags: [posts]
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/blogPatchRequest" }
+            schema: { $ref: "#/components/schemas/postPatchRequest" }
       responses:
         "200":
-          description: Blog patched successfully
+          description: post patched successfully
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/blogResponse" }
+              schema: { $ref: "#/components/schemas/postResponse" }
         "400":
           description: Missing required fields
           content: 
@@ -286,14 +291,14 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
         "404":
-          description: blog not found
+          description: post not found
           content: 
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
     delete:
-      summary: Delete blog using id
-      tags: [blogs]
+      summary: Delete post using id
+      tags: [posts]
       responses:
         "204":
           description: Deleted successfully
@@ -561,7 +566,7 @@ components:
           example: I'm the lord of all ducks
         avatar_url: 
           type: string
-          description: Profile picture for the blog.
+          description: Profile picture for the post.
           example: https://ipfs.io/ipfs/QmQA66xJFVcP5h8fs1PJt3fXeGwVPB55Q6o8PwEx1Jc2kz
         created_at:
           type: string
@@ -592,7 +597,7 @@ components:
           example: I'm the lord of all ducks
         avatar_url: 
           type: string
-          description: Profile picture for the blog.
+          description: Profile picture for the post.
           example: https://ipfs.io/ipfs/QmQA66xJFVcP5h8fs1PJt3fXeGwVPB55Q6o8PwEx1Jc2kz
         created_at:
           type: string
@@ -603,8 +608,8 @@ components:
           description: When the user info was last modified
           example: date-time
 
-    # --- BLOG SCHEMAS ---
-    blogResponse:
+    # --- POST SCHEMAS ---
+    postResponse:
       type: object
       properties:
         id: { type: integer, example: 1 }
@@ -615,7 +620,7 @@ components:
         quantity: { type: integer }
         created_at: { type: integer }
         updated_at: { type: integer }
-    blogCreateRequest:
+    postCreateRequest:
       type: object
       required: [name, price, quantity]
       properties:
@@ -624,7 +629,7 @@ components:
         price: { type: number }
         sku: { type: string }
         quantity: { type: integer }
-    blogPatchRequest:
+    postPatchRequest:
       type: object
       properties:
         name: { type: string }
