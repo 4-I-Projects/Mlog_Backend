@@ -11,7 +11,7 @@ services:
       - "9080:9080"
       - "9180:9180"
       - "9091:9091"
-
+  #
   apisix-dashboard:
     image: apache/apisix-dashboard:3.0.1-centos
     volumes:
@@ -20,24 +20,55 @@ services:
       - apisix
     ports:
     - "9000:9000"
+  etcd:
+    image: openeuler/etcd:3.6.4-oe2403sp1
+    environment:
+      ETCD_ENABLE_V2: true
+      ALLOW_NONE_AUTHENTICATION: yes
+      ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2397
+      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2397
+
+  # prometheus:
+  #   image: prom/prometheus:v2.52.0
+  #   volumes:
+  #     - ./conf/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  # loki:
+  #   image: grafana/loki:3.0.0
+  # jaeger:
+  #   image: jaegertracing/all-in-one:1.57
+  #   environment:
+  #     COLLECTOR_OTLP_ENABLED: true
+  #   ports:
+  #     - "16686:16686"
+  # grafana:
+  #   image: grafana/grafana:11.0.0
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./conf/grafana/provisioning:/etc/grafana/provisioning
+  #     - ./conf/grafana/dashboards:/var/lib/grafana/dashboards
+  #     - ./conf/grafana/config/grafana.ini:/etc/grafana/grafana.ini
 
   keycloak:
   #   image: 10.60.156.72/docker.io/keycloak/keycloak
-    image: quay.io/keycloak/keycloak:26.3.1
+    image: quay.io/keycloak/keycloak:26.4.6
     container_name: keycloak
-    # command: start-dev
+    command: start-dev
     environment:
-  #     #KC_HOSTNAME: ${KC_HOSTNAME}
+  #     KC_HOSTNAME: ${KC_HOSTNAME}
   #     KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT}
   #     KC_HTTP_ENABLED: true
   #     KC_HOSTNAME_STRICT_HTTPS: false
-  #     KC_HEALTH_ENABLED: true
-  #     KEYCLOAK_ADMIN: ${KC_ADMIN}
-  #     KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
-  #     KC_DB: mariadb
-  #     KC_DB_URL: jdbc:mariadb://${MARIADB_ADDR}/keycloak?createDatabaseIfNotExist=true&characterEncoding=UTF-8
-  #     KC_DB_USERNAME: ${MARIADB_USERNAME}
-  #     KC_DB_PASSWORD: ${MARIADB_PASSWORD}
+      KC_HEALTH_ENABLED: true
+      KC_METRICS_ENABLED: true
+
+      KEYCLOAK_ADMIN: ${KC_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
+
+      # KC_DB: mariadb
+      # KC_DB_URL: jdbc:mariadb://keycloak-db:3306/keycloak?createDatabaseIfNotExist=true&characterEncoding=UTF-8
+      # KC_DB_USERNAME: ${MARIADB_USERNAME}
+      # KC_DB_PASSWORD: ${MARIADB_PASSWORD}
   #     KC_TRANSACTION_XA_ENABLED: true
     ports:
       - 8080:8080
@@ -45,25 +76,19 @@ services:
     networks:
       - mlog 
 
-  opa:
-    image: openpolicyagent/opa
-    ports:
-      - "8181:8181"
-
-  # opal-server:
-  #   image: permitio/opal-server
-  #   container_name: opal-server
+  # keycloak-db:
+  #   image: mariadb
+  #   restart: always
   #   environment:
-  #     - OPAL_BROADCAST_URI=kafka://10.0.0.41:9092,10.0.0.86:9092,10.0.0.99:9092
-  #     - UVICORN_NUM_WORKERS=2
-  #     - OPAL_POLICY_REPO_URL=https://github.com/trantuananh1/test-opa.git
-  #     - OPAL_POLICY_REPO_WEBHOOK_SECRET=OQ3M81ECbeJEIka4MhgPalSbxVLLe91GBZyiVtPEUsM
-  #     - OPAL_DATA_CONFIG_SOURCES={"external_source_url":"http://117.5.151.111:8081/v2/pdps/data/config"}
-  #     - OPAL_LOG_FORMAT_INCLUDE_PID=true
-  #   ports:
-  #     - "7002:7002"
+  #     MARIADB_USER: ${MARIADB_USERNAME}
+  #     MARIADB_ROOT_PASSWORD: ${MARIADB_PASSWORD}
   #   networks:
-  #     - mlog
+  #     - mlog 
+
+  # opa:
+  #   image: openpolicyagent/opa
+  #   ports:
+  #     - "8181:8181"
 
   # user_service:
   #   build: ./services/user
@@ -84,12 +109,12 @@ services:
   #   networks:
   #     - mlog
 
-  prometheus:
-    image: "prom/prometheus"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    ports:
-      - "9090:9090"
+  # prometheus:
+  #   image: "prom/prometheus"
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #   ports:
+  #     - "9090:9090"
 
 networks:
   mlog:

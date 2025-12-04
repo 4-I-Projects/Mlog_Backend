@@ -23,6 +23,24 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/userResponse"
+    post:
+      summary: Create user
+      operationId: createUser
+      tags: [users]
+      requestBody:
+        description: body of user create request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userRequest"
+      responses:
+        "201":
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userResponse"
                   
   /api/v1/users/{user_id}:
     get:
@@ -320,7 +338,7 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/CommentListResponse' }
-  
+
   /api/v1/comments:
     post:
       tags: [comments]
@@ -361,7 +379,7 @@ paths:
               schema: { $ref: '#/components/schemas/CommentResponse' }
         '403':
           description: Not authorized to edit this comment
-    
+
     delete:
       tags: [comments]
       summary: Soft delete a comment
@@ -421,7 +439,7 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/UserListResponse' }
-    
+
     post:
       tags: [likes]
       summary: Like a post
@@ -451,7 +469,7 @@ paths:
   # ==========================================
   # ENGAGEMENT SERVICE - USER FOLLOWS (NEW)
   # ==========================================
-  
+
   /api/v1/users/{target_user_id}/follow:
     post:
       tags: [follows]
@@ -533,6 +551,27 @@ paths:
 
 components:
   schemas:
+    userRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: username, must be unique
+          example: 6myduck10293
+        display_name:
+          type: string
+          description: user's display name
+          example: 6myduck
+        bio:
+          type: string
+          description: user's bio
+          example: I'm the lord of all ducks
+        avatar_url: 
+          type: string
+          description: Profile picture for the post.
+          example: https://ipfs.io/ipfs/QmQA66xJFVcP5h8fs1PJt3fXeGwVPB55Q6o8PwEx1Jc2kz
+      required:
+        - username
     userResponse:
       type: object
       properties:
@@ -639,7 +678,7 @@ components:
         id: { type: integer }
         username: { type: string }
         avatarUrl: { type: string, nullable: true }
-    
+
     # [NEW] Dùng chung cho response trả về danh sách user (Likes, Followers, Following)
     UserListResponse:
       type: object
