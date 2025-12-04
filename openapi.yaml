@@ -549,6 +549,36 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/UserListResponse' }
 
+# ==========================================
+# AI SERVICE (Mood/Sentiment Analysis)
+# ==========================================
+
+  /api/v1/posts/analyze-mood:
+    post:
+      summary: Analyze the mood/sentiment of a post's content
+      operationId: analyzePostMood
+      tags: [ai]
+      description: Receives a post's content and returns its dominant mood (Positive, Negative, Neutral).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostMoodRequest"
+      responses:
+        '200':
+          description: Mood analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MoodResponse"
+        '400':
+          description: Invalid input (e.g., content is empty)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
   schemas:
     userRequest:
@@ -733,3 +763,38 @@ components:
           properties:
             nextCursor: { type: string, nullable: true }
             limit: { type: integer }
+
+    # --- AI/ANALYTICS SCHEMAS ---
+    PostMoodRequest:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+          description: The text content of the post to analyze.
+          minLength: 1
+          maxLength: 5000
+          example: Tôi rất thích sản phẩm này, nhưng dịch vụ giao hàng hơi chậm.
+
+    MoodResponse:
+      type: object
+      description: The result of the sentiment analysis.
+      properties:
+        mood:
+          type: string
+          description: The dominant mood classification (e.g., 'Positive', 'Negative', 'Neutral').
+          example: Mixed
+        score:
+          type: number
+          format: float
+          description: The sentiment score, typically between -1.0 (Negative) and 1.0 (Positive).
+          example: 0.35
+        magnitude:
+          type: number
+          format: float
+          description: The strength/intensity of emotion expressed in the content.
+          example: 0.8
+        analysis_source:
+          type: string
+          description: The AI service used for analysis (e.g., Cloud NL, Vertex AI).
+          example: Google Cloud NL API

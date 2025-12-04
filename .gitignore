@@ -9,3 +9,5 @@ services/user/src/main/java/com/mlog/user
 *.idea/
 
 tools/
+.idea/
+google-natural-language-ai-keys.json
