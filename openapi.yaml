@@ -51,7 +51,7 @@ paths:
         - name: user_id
           in: path
           required: true
-          schema: { type: string }
+          schema: { type: string, format: uuid }
       responses: 
         "200":
           description: Get a specific user with the user_id
@@ -86,6 +86,7 @@ paths:
           required: true
           schema: 
             type: string
+            format: uuid
       requestBody:
         description: Information about why the user is banned
         required: true
@@ -114,6 +115,7 @@ paths:
           required: true
           schema: 
             type: string
+            format: uuid
       requestBody:
         description: Informations about why the user is unbanned
         required: true
@@ -606,7 +608,8 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
+          format: uuid
           description: user's id, autoincrement
           example: 1
         username:
@@ -625,6 +628,9 @@ components:
           type: string
           description: Profile picture for the post.
           example: https://ipfs.io/ipfs/QmQA66xJFVcP5h8fs1PJt3fXeGwVPB55Q6o8PwEx1Jc2kz
+        banned:
+          type: boolean
+          description: Whether the user is banned
         created_at:
           type: string
           format: date-time
