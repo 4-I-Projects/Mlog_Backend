@@ -19,6 +19,7 @@ public interface UserMapper {
     @Mapping(target = "updatedAt", expression = "java(getOffsetDatetimeOf(userEntity.getUpdatedAt()))")
     UserResponse toUserResponse(UserEntity userEntity);
 
+    @Mapping(target = "banned", constant = "false")
     UserEntity toUser(UserRequest userRequest);
 
     default OffsetDateTime getOffsetDatetimeOf(Instant instant) {
