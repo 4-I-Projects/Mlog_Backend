@@ -1,5 +1,29 @@
 from google.cloud import language_v1
 
+def classify_mood_advanced(score, magnitude, score_threshold=0.25, magnitude_threshold=0.5):
+    if magnitude < magnitude_threshold:
+        # Nếu tổng cường độ cảm xúc quá thấp, văn bản được coi là Trung tính/Thực tế
+        # (Không có đủ cảm xúc để phân loại Tích cực hay Tiêu cực).
+        mood = "Trung tính/Thực tế"
+        
+    else:
+        #  Phân loại Phân cực (Score) ---
+
+        if score >= score_threshold:
+            # Score dương và có đủ cường độ
+            mood = "Tích cực"
+            
+        elif score <= -score_threshold:
+            # Score âm và có đủ cường độ
+            mood = "Tiêu cực"
+            
+        else:
+            # Score gần 0 nhưng Magnitude cao (Hỗn hợp/Xung đột)
+            # Tức là có nhiều cảm xúc trái ngược nhau được đề cập (ví dụ: "Sản phẩm tốt nhưng dịch vụ tệ")
+            mood = "Hỗn hợp (Mixed)"
+    
+    return mood
+
 def analyze_sentiment_vietnamese(text_content):
     """
     Phân tích tâm lý (sentiment) của một đoạn văn bản tiếng Việt bằng Cloud Natural Language API.
@@ -29,22 +53,11 @@ def analyze_sentiment_vietnamese(text_content):
     print(f"Nội dung: {text_content}")
     print(f"Score (Điểm số): {score:.2f}")
     print(f"Magnitude (Cường độ): {magnitude:.2f}")
-
-    # Đưa ra kết luận đơn giản
-    if score >= 0.25:
-        mood = "Tích cực"
-    elif score <= -0.25:
-        mood = "Tiêu cực"
-    else:
-        mood = "Trung tính"
         
-    print(f"Phân loại Mood: **{mood}**")
+    print(f"Phân loại Mood: **{classify_mood_advanced(score, magnitude)}**")
     
-    return mood, score, magnitude
+    return score, magnitude
 
-# --- Thực thi ví dụ ---
-# text_post = "Sản phẩm này thật tuyệt vời, tôi rất hài lòng với chất lượng và dịch vụ giao hàng nhanh chóng."
-# analyze_sentiment_vietnamese(text_post)
+# analyze_sentiment_vietnamese("Sản phẩm này thật tuyệt vời, tôi rất hài lòng với chất lượng và dịch vụ giao hàng nhanh chóng.")
 
-# Ví dụ tiêu cực
 analyze_sentiment_vietnamese("Tôi thất vọng về trải nghiệm này. Hàng hóa bị hỏng và không ai hỗ trợ tôi.")
