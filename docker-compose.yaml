@@ -11,6 +11,8 @@ services:
       - "9080:9080"
       - "9180:9180"
       - "9091:9091"
+    networks:
+      - mlog
   #
   apisix-dashboard:
     image: apache/apisix-dashboard:3.0.1-centos
@@ -20,6 +22,8 @@ services:
       - apisix
     ports:
     - "9000:9000"
+    networks:
+      - mlog
   etcd:
     image: openeuler/etcd:3.6.4-oe2403sp1
     environment:
@@ -27,6 +31,8 @@ services:
       ALLOW_NONE_AUTHENTICATION: yes
       ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2397
       ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2397
+    networks:
+      - mlog
 
   # prometheus:
   #   image: prom/prometheus:v2.52.0
@@ -49,32 +55,32 @@ services:
   #     - ./conf/grafana/dashboards:/var/lib/grafana/dashboards
   #     - ./conf/grafana/config/grafana.ini:/etc/grafana/grafana.ini
 
-  keycloak:
-  #   image: 10.60.156.72/docker.io/keycloak/keycloak
-    image: quay.io/keycloak/keycloak:26.4.6
-    container_name: keycloak
-    command: start-dev
-    environment:
-  #     KC_HOSTNAME: ${KC_HOSTNAME}
-  #     KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT}
-  #     KC_HTTP_ENABLED: true
-  #     KC_HOSTNAME_STRICT_HTTPS: false
-      KC_HEALTH_ENABLED: true
-      KC_METRICS_ENABLED: true
-
-      KEYCLOAK_ADMIN: ${KC_ADMIN}
-      KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
-
-      # KC_DB: mariadb
-      # KC_DB_URL: jdbc:mariadb://keycloak-db:3306/keycloak?createDatabaseIfNotExist=true&characterEncoding=UTF-8
-      # KC_DB_USERNAME: ${MARIADB_USERNAME}
-      # KC_DB_PASSWORD: ${MARIADB_PASSWORD}
-  #     KC_TRANSACTION_XA_ENABLED: true
-    ports:
-      - 8080:8080
-    restart: always
-    networks:
-      - mlog 
+  # keycloak:
+  # #   image: 10.60.156.72/docker.io/keycloak/keycloak
+  #   image: quay.io/keycloak/keycloak:26.4.6
+  #   container_name: keycloak
+  #   command: start-dev
+  #   environment:
+  # #     KC_HOSTNAME: ${KC_HOSTNAME}
+  # #     KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT}
+  # #     KC_HTTP_ENABLED: true
+  # #     KC_HOSTNAME_STRICT_HTTPS: false
+  #     KC_HEALTH_ENABLED: true
+  #     KC_METRICS_ENABLED: true
+  #
+  #     KEYCLOAK_ADMIN: ${KC_ADMIN}
+  #     KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
+  #
+  #     # KC_DB: mariadb
+  #     # KC_DB_URL: jdbc:mariadb://keycloak-db:3306/keycloak?createDatabaseIfNotExist=true&characterEncoding=UTF-8
+  #     # KC_DB_USERNAME: ${MARIADB_USERNAME}
+  #     # KC_DB_PASSWORD: ${MARIADB_PASSWORD}
+  # #     KC_TRANSACTION_XA_ENABLED: true
+  #   ports:
+  #     - 8080:8080
+  #   restart: always
+  #   networks:
+  #     - mlog 
 
   # keycloak-db:
   #   image: mariadb
@@ -87,20 +93,28 @@ services:
 
   # opa:
   #   image: openpolicyagent/opa
+  #   container_name: opa
+  #   volumes:
+  #     - ./conf/opa/policies:/policies
   #   ports:
   #     - "8181:8181"
+  #   command: >
+  #     run --server
+  #     --log-level debug
+  #     --addr :8181
+  #     /policies
 
-  # user_service:
-  #   build: ./services/user
-  #   container_name: user_service
+  user_service:
+    build: ./services/user
+    container_name: user_service
   #   env_file:
   #     - .env
-  #   ports:
-  #     - '8081:8081'
-  #   networks:
-  #     - mlog
-  #   volumes:
-  #
+  # ports:
+  #   - '8081:8081'
+    networks:
+      - mlog
+  # volumes:
+
   # redis:
   #   image: redis:7.4.2
   #   container_name: redis
