@@ -1,8 +1,4 @@
 openapitools.json
-services/user/src/main/java/com/mlog/user/api
-services/user/src/main/java/com/mlog/user/configuration
-services/user/src/main/java/com/mlog/user/model
-services/user/src/main/java/com/mlog/user
 
 *generated/
 *docs/
