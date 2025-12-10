@@ -115,30 +115,34 @@ services:
       - mlog
   # volumes:
 
-  # content_service:
-  #   build: ./services/content-service
-  #   container_name: content_service
-  #   networks:
-  #     - mlog
-  #   environment:
-  #     DB_URL: jdbc:mariadb://content_service_db:3306/contentdb
-  #     DB_USER: root
-  #     DB_PASSWORD: admin
-  #   depends_on:
-  #     content_service_db:
-  #       condition: service_healthy
+  content_service:
+    build: ./services/content
+    container_name: content_service
+    networks:
+      - mlog
+    environment:
+      DB_URL: jdbc:mariadb://content_service_db:3306/contentdb
+      DB_USER: root
+      DB_PASSWORD: admin
+    depends_on:
+      content_service_db:
+        condition: service_healthy
 
-  # content_service_db:
-  #   image: mariadb:10.11
-  #   container_name: content_service_db
-  #   environment:
-  #     MYSQL_DATABASE: contentdb
-  #     MYSQL_ROOT_PASSWORD: admin
-  #   healthcheck:
-  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
-  #     interval: 5s
-  #     timeout: 5s
-  #     retries: 10
+  content_service_db:
+    image: mariadb:10.11
+    container_name: content_service_db
+    networks:
+      - mlog
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_DATABASE: contentdb
+      MARIADB_ROOT_PASSWORD: admin
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   # redis:
   #   image: redis:7.4.2

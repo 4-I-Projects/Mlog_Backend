@@ -1,12 +1,6 @@
 package com.mlog.user;
 
 import com.fasterxml.jackson.databind.Module;
-import com.viettel.sdk.Vauthz;
-import com.viettel.sdk.VauthzConfig;
-import com.viettel.sdk.api.VauthzApiError;
-import com.viettel.sdk.api.VauthzContextError;
-import com.viettel.sdk.openapi.models.UserCreate;
-import com.viettel.sdk.openapi.models.UserRead;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
