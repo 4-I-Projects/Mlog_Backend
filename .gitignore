@@ -8,3 +8,4 @@ tools/
 .idea/
 google-natural-language-ai-keys.json
 *.jar
+.env
