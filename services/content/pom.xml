@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.mlog.backend</groupId>
-	<artifactId>content-service</artifactId>
+	<artifactId>content</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>content-service</name>
 	<description>Demo project for Spring Boot</description>
