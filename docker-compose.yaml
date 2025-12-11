@@ -57,7 +57,9 @@ services:
   #   image: 10.60.156.72/docker.io/keycloak/keycloak
     image: quay.io/keycloak/keycloak:26.4.6
     container_name: keycloak
-    command: start-dev
+    volumes:
+      - ./keycloak-theme/my-theme:/opt/keycloak/themes/mlog-theme
+    command: start-dev --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false
     environment:
   #     KC_HOSTNAME: ${KC_HOSTNAME}
   #     KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT}
