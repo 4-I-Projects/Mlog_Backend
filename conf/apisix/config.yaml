@@ -8,6 +8,8 @@ deployment:
       - http://etcd:2397
 
 plugins:
+  - cors
+  - openid-connect
   - http-logger
   - ip-restriction
   - jwt-auth

@@ -142,6 +142,28 @@ services:
       timeout: 5s
       retries: 10
 
+  # engagement_service_db:
+  #   build: ./services/engagement
+  #   container_name: engagement_service
+  #   ports:
+  #     - 8081:8081
+  #   networks:
+  #     - mlog
+  #
+  # content_service_db:
+  #   image: mariadb:10.11
+  #   container_name: engagement_service_db
+  #   networks:
+  #     - mlog
+  #   environment:
+  #     MARIADB_DATABASE: engagementdb
+  #     MARIADB_ROOT_PASSWORD: admin
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 10
+
   # redis:
   #   image: redis:7.4.2
   #   container_name: redis
