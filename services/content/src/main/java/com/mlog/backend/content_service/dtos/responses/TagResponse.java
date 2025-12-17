@@ -7,13 +7,12 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class TagResponseDTO {
+public class TagResponse {
 
     private Long id;
     private String name;
     private String description;
 
-    // Auditing fields
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String createdBy;

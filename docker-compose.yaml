@@ -133,6 +133,8 @@ services:
   content_service_db:
     image: mariadb:10.11
     container_name: content_service_db
+    ports:
+      - 3306:3306
     networks:
       - mlog
     environment:

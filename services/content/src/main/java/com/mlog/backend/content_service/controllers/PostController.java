@@ -1,11 +1,11 @@
 package com.mlog.backend.content_service.controllers;
 
-import com.mlog.backend.content_service.dtos.responses.PostResponseDTO;
+import com.mlog.backend.content_service.dtos.responses.PostResponse;
 import com.mlog.backend.content_service.entities.Post;
-import com.mlog.backend.content_service.dtos.requests.PostCreateRequestDTO;
-import com.mlog.backend.content_service.dtos.requests.PostPatchRequestDTO;
-import com.mlog.backend.content_service.dtos.responses.CategoryResponseDTO;
-import com.mlog.backend.content_service.dtos.responses.TagResponseDTO;
+import com.mlog.backend.content_service.dtos.requests.PostCreateRequest;
+import com.mlog.backend.content_service.dtos.requests.PostPatchRequest;
+import com.mlog.backend.content_service.dtos.responses.CategoryResponse;
+import com.mlog.backend.content_service.dtos.responses.TagResponse;
 import com.mlog.backend.content_service.services.PostService;
 
 import jakarta.validation.Valid;
@@ -19,29 +19,37 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/posts")
+@RequestMapping("/api/posts")
 public class PostController {
 
     @Autowired
     private PostService postService;
 
-    private PostResponseDTO toResponse(Post post) {
-        // Ánh xạ Category
-        CategoryResponseDTO categoryResponse = CategoryResponseDTO.builder()
+    private PostResponse toResponse(Post post) {
+        CategoryResponse categoryResponse = CategoryResponse.builder()
                 .id(post.getCategory().getId())
                 .name(post.getCategory().getName())
                 .description(post.getCategory().getDescription())
+                .createdAt(post.getCategory().getCreatedAt())
+                .updatedAt(post.getCategory().getUpdatedAt())
+                .createdBy(post.getCategory().getCreatedBy())
+                .updatedBy(post.getCategory().getUpdatedBy())
                 .build();
 
         // Ánh xạ Tags
-        Set<TagResponseDTO> tagResponses = post.getTags().stream()
-                .map(tag -> TagResponseDTO.builder()
+        Set<TagResponse> tagResponses = post.getTags().stream()
+                .map(tag -> TagResponse.builder()
                         .id(tag.getId())
                         .name(tag.getName())
+                        .description(tag.getDescription())
+                        .createdAt(tag.getCreatedAt())
+                        .updatedAt(tag.getUpdatedAt())
+                        .createdBy(tag.getCreatedBy())
+                        .updatedBy(tag.getUpdatedBy())
                         .build())
                 .collect(Collectors.toSet());
 
-        return PostResponseDTO.builder()
+        return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .body(post.getBody())
@@ -49,8 +57,12 @@ public class PostController {
                 .publishedAt(post.getPublishedAt())
                 .scheduledAt(post.getScheduledAt())
                 .authorId(post.getAuthorId())
-                .category(categoryResponse) // DTO Category
-                .tags(tagResponses)       // DTO Tags
+                .category(categoryResponse)
+                .tags(tagResponses)
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .createdBy(post.getCreatedBy())
+                .updatedBy(post.getUpdatedBy())
                 .build();
     }
 
@@ -58,9 +70,9 @@ public class PostController {
     // GET /api/v1/posts
     // ==========================================
     @GetMapping
-    public ResponseEntity<List<PostResponseDTO>> getAllPosts() {
+    public ResponseEntity<List<PostResponse>> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
-        List<PostResponseDTO> responseList = posts.stream()
+        List<PostResponse> responseList = posts.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
 
@@ -71,7 +83,7 @@ public class PostController {
     // POST /api/v1/posts
     // ==========================================
     @PostMapping
-    public ResponseEntity<PostResponseDTO> createPost(@Valid @RequestBody PostCreateRequestDTO request) {
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostCreateRequest request) {
         Post createdPost = postService.createPost(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(createdPost));
     }
@@ -80,7 +92,7 @@ public class PostController {
     // GET /api/v1/posts/{post_id}
     // ==========================================
     @GetMapping("/{post_id}")
-    public ResponseEntity<PostResponseDTO> getPostById(@PathVariable("post_id") Long postId) {
+    public ResponseEntity<PostResponse> getPostById(@PathVariable("post_id") Long postId) {
         Post post = postService.getPostById(postId);
         return ResponseEntity.ok(toResponse(post));
     }
@@ -89,9 +101,9 @@ public class PostController {
     // PUT /api/v1/posts/{post_id}
     // ==========================================
     @PutMapping("/{post_id}")
-    public ResponseEntity<PostResponseDTO> updatePost(
+    public ResponseEntity<PostResponse> updatePost(
             @PathVariable("post_id") Long postId,
-            @Valid @RequestBody PostCreateRequestDTO request) {
+            @Valid @RequestBody PostCreateRequest request) {
 
         Post updatedPost = postService.updatePost(postId, request);
         return ResponseEntity.ok(toResponse(updatedPost));
@@ -101,9 +113,9 @@ public class PostController {
     // PATCH /api/v1/posts/{post_id}
     // ==========================================
     @PatchMapping("/{post_id}")
-    public ResponseEntity<PostResponseDTO> patchPost(
+    public ResponseEntity<PostResponse> patchPost(
             @PathVariable("post_id") Long postId,
-            @RequestBody PostPatchRequestDTO request) {
+            @RequestBody PostPatchRequest request) {
 
         Post patchedPost = postService.patchPost(postId, request);
         return ResponseEntity.ok(toResponse(patchedPost));
