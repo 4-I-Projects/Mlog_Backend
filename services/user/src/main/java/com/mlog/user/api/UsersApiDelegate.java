@@ -20,7 +20,7 @@ import jakarta.annotation.Generated;
  * A delegate to be called by the {@link UsersApiController}}.
  * Implement this interface with a {@link org.springframework.stereotype.Service} annotated class.
  */
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-07T20:19:34.840755520+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-18T18:00:32.682641381+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
 public interface UsersApiDelegate {
 
     default Optional<NativeWebRequest> getRequest() {
@@ -30,11 +30,13 @@ public interface UsersApiDelegate {
     /**
      * POST /api/v1/users : Create user
      *
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @param userRequest body of user create request (required)
      * @return created (status code 201)
      * @see UsersApi#createUser
      */
-    default ResponseEntity<UserResponse> createUser(UserRequest userRequest) {
+    default ResponseEntity<UserResponse> createUser(String xUserinfo,
+        UserRequest userRequest) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
@@ -51,10 +53,11 @@ public interface UsersApiDelegate {
     /**
      * GET /api/v1/users/me : Get my user info
      *
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @return Get my user info (status code 200)
      * @see UsersApi#getCurrentUser
      */
-    default ResponseEntity<UserResponse> getCurrentUser() {
+    default ResponseEntity<UserResponse> getCurrentUser(String xUserinfo) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {

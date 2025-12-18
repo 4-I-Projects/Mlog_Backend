@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-07T20:19:34.840755520+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "users", description = "the users API")
 public interface UsersApi {
@@ -44,6 +43,7 @@ public interface UsersApi {
     /**
      * POST /api/v1/users : Create user
      *
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @param userRequest body of user create request (required)
      * @return created (status code 201)
      */
@@ -64,9 +64,10 @@ public interface UsersApi {
         consumes = { "application/json" }
     )
     default ResponseEntity<UserResponse> createUser(
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo,
         @Parameter(name = "UserRequest", description = "body of user create request", required = true) @Valid @RequestBody UserRequest userRequest
     ) {
-        return getDelegate().createUser(userRequest);
+        return getDelegate().createUser(xUserinfo, userRequest);
     }
 
 
@@ -74,6 +75,7 @@ public interface UsersApi {
     /**
      * GET /api/v1/users/me : Get my user info
      *
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @return Get my user info (status code 200)
      */
     @Operation(
@@ -92,9 +94,9 @@ public interface UsersApi {
         produces = { "application/json" }
     )
     default ResponseEntity<UserResponse> getCurrentUser(
-        
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo
     ) {
-        return getDelegate().getCurrentUser();
+        return getDelegate().getCurrentUser(xUserinfo);
     }
 
 

@@ -8,6 +8,7 @@ deployment:
       - http://etcd:2397
 
 plugins:
+  - proxy-rewrite
   - cors
   - openid-connect
   - http-logger
