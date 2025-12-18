@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-public class PostCreateRequestDTO {
+public class PostCreateRequest {
 
     @NotBlank(message = "Title is required")
     private String title;

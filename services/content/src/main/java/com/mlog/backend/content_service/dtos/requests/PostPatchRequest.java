@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-public class PostPatchRequestDTO {
+public class PostPatchRequest {
 
     // ==========================================
     // Các trường cơ bản

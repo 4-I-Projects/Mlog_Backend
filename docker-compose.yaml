@@ -120,34 +120,36 @@ services:
   # ports:
   #   - '8081:8081'
 
-  # content_service:
-  #   build: ./services/content
-  #   container_name: content_service
-  #   ports:
-  #     - 8081:8081
-  #   networks:
-  #     - mlog
-  #   environment:
-  #     DB_URL: jdbc:mariadb://content_service_db:3306/contentdb
-  #     DB_USER: root
-  #     DB_PASSWORD: admin
-  #   depends_on:
-  #     content_service_db:
-  #       condition: service_healthy
-  #
-  # content_service_db:
-  #   image: mariadb:10.11
-  #   container_name: content_service_db
-  #   networks:
-  #     - mlog
-  #   environment:
-  #     MARIADB_DATABASE: contentdb
-  #     MARIADB_ROOT_PASSWORD: admin
-  #   healthcheck:
-  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
-  #     interval: 5s
-  #     timeout: 5s
-  #     retries: 10
+  content_service:
+    build: ./services/content
+    container_name: content_service
+    ports:
+      - 8081:8081
+    networks:
+      - mlog
+    environment:
+      DB_URL: jdbc:mariadb://content_service_db:3306/contentdb
+      DB_USER: root
+      DB_PASSWORD: admin
+    depends_on:
+      content_service_db:
+        condition: service_healthy
+
+  content_service_db:
+    image: mariadb:10.11
+    container_name: content_service_db
+    ports:
+      - 3306:3306
+    networks:
+      - mlog
+    environment:
+      MARIADB_DATABASE: contentdb
+      MARIADB_ROOT_PASSWORD: admin
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   # engagement_service_db:
   #   build: ./services/engagement
