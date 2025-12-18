@@ -6,13 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.mlog.engagement.model.UserSummary;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.UUID;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
-import java.util.NoSuchElementException;
-import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -26,14 +22,14 @@ import jakarta.annotation.Generated;
  * CommentResponse
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-11T14:36:31.411887001+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-17T15:41:58.906115920+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
 public class CommentResponse {
 
   private @Nullable UUID id;
 
   private @Nullable Long postId;
 
-  private JsonNullable<UUID> parentId = JsonNullable.<UUID>undefined();
+  private @Nullable UUID parentId = null;
 
   private @Nullable String content;
 
@@ -91,8 +87,8 @@ public class CommentResponse {
     this.postId = postId;
   }
 
-  public CommentResponse parentId(UUID parentId) {
-    this.parentId = JsonNullable.of(parentId);
+  public CommentResponse parentId(@Nullable UUID parentId) {
+    this.parentId = parentId;
     return this;
   }
 
@@ -103,11 +99,11 @@ public class CommentResponse {
   @Valid 
   @Schema(name = "parentId", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("parentId")
-  public JsonNullable<UUID> getParentId() {
+  public @Nullable UUID getParentId() {
     return parentId;
   }
 
-  public void setParentId(JsonNullable<UUID> parentId) {
+  public void setParentId(@Nullable UUID parentId) {
     this.parentId = parentId;
   }
 
@@ -262,7 +258,7 @@ public class CommentResponse {
     CommentResponse commentResponse = (CommentResponse) o;
     return Objects.equals(this.id, commentResponse.id) &&
         Objects.equals(this.postId, commentResponse.postId) &&
-        equalsNullable(this.parentId, commentResponse.parentId) &&
+        Objects.equals(this.parentId, commentResponse.parentId) &&
         Objects.equals(this.content, commentResponse.content) &&
         Objects.equals(this.user, commentResponse.user) &&
         Objects.equals(this.likeCount, commentResponse.likeCount) &&
@@ -272,20 +268,9 @@ public class CommentResponse {
         Objects.equals(this.updatedAt, commentResponse.updatedAt);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
-    return Objects.hash(id, postId, hashCodeNullable(parentId), content, user, likeCount, replyCount, isLiked, createdAt, updatedAt);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(id, postId, parentId, content, user, likeCount, replyCount, isLiked, createdAt, updatedAt);
   }
 
   @Override

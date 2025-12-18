@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-11T14:36:31.411887001+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-18T07:05:13.042309488+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "likes", description = "the likes API")
 public interface LikesApi {
@@ -39,43 +39,18 @@ public interface LikesApi {
         return new LikesApiDelegate() {};
     }
 
-    String PATH_API_V1_POSTS_POST_ID_LIKES_DELETE = "/api/v1/posts/{post_id}/likes";
-    /**
-     * DELETE /api/v1/posts/{post_id}/likes : Unlike a post
-     *
-     * @param postId  (required)
-     * @return Unliked successfully (status code 204)
-     */
-    @Operation(
-        operationId = "apiV1PostsPostIdLikesDelete",
-        summary = "Unlike a post",
-        tags = { "likes" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Unliked successfully")
-        }
-    )
-    @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = LikesApi.PATH_API_V1_POSTS_POST_ID_LIKES_DELETE
-    )
-    default ResponseEntity<Void> apiV1PostsPostIdLikesDelete(
-        @NotNull @Parameter(name = "post_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("post_id") Long postId
-    ) {
-        return getDelegate().apiV1PostsPostIdLikesDelete(postId);
-    }
-
-
-    String PATH_API_V1_POSTS_POST_ID_LIKES_GET = "/api/v1/posts/{post_id}/likes";
+    String PATH_GET_ALL_LIKES_OF_POST = "/api/v1/posts/{post_id}/likes";
     /**
      * GET /api/v1/posts/{post_id}/likes : Get list of users who liked the post
      *
      * @param postId  (required)
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @param page  (optional, default to 1)
      * @param limit  (optional, default to 20)
      * @return List of users who liked the post (status code 200)
      */
     @Operation(
-        operationId = "apiV1PostsPostIdLikesGet",
+        operationId = "getAllLikesOfPost",
         summary = "Get list of users who liked the post",
         tags = { "likes" },
         responses = {
@@ -86,28 +61,30 @@ public interface LikesApi {
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = LikesApi.PATH_API_V1_POSTS_POST_ID_LIKES_GET,
+        value = LikesApi.PATH_GET_ALL_LIKES_OF_POST,
         produces = { "application/json" }
     )
-    default ResponseEntity<UserListResponse> apiV1PostsPostIdLikesGet(
+    default ResponseEntity<UserListResponse> getAllLikesOfPost(
         @NotNull @Parameter(name = "post_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("post_id") Long postId,
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo,
         @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
         @Parameter(name = "limit", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "limit", required = false, defaultValue = "20") Integer limit
     ) {
-        return getDelegate().apiV1PostsPostIdLikesGet(postId, page, limit);
+        return getDelegate().getAllLikesOfPost(postId, xUserinfo, page, limit);
     }
 
 
-    String PATH_API_V1_POSTS_POST_ID_LIKES_POST = "/api/v1/posts/{post_id}/likes";
+    String PATH_LIKE_POST = "/api/v1/posts/{post_id}/likes";
     /**
      * POST /api/v1/posts/{post_id}/likes : Like a post
      *
      * @param postId  (required)
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @return Liked successfully (status code 201)
      *         or Already liked (status code 409)
      */
     @Operation(
-        operationId = "apiV1PostsPostIdLikesPost",
+        operationId = "likePost",
         summary = "Like a post",
         tags = { "likes" },
         responses = {
@@ -117,12 +94,41 @@ public interface LikesApi {
     )
     @RequestMapping(
         method = RequestMethod.POST,
-        value = LikesApi.PATH_API_V1_POSTS_POST_ID_LIKES_POST
+        value = LikesApi.PATH_LIKE_POST
     )
-    default ResponseEntity<Void> apiV1PostsPostIdLikesPost(
-        @NotNull @Parameter(name = "post_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("post_id") Long postId
+    default ResponseEntity<Void> likePost(
+        @NotNull @Parameter(name = "post_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("post_id") Long postId,
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo
     ) {
-        return getDelegate().apiV1PostsPostIdLikesPost(postId);
+        return getDelegate().likePost(postId, xUserinfo);
+    }
+
+
+    String PATH_UNLIKE_POST = "/api/v1/posts/{post_id}/likes";
+    /**
+     * DELETE /api/v1/posts/{post_id}/likes : Unlike a post
+     *
+     * @param postId  (required)
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
+     * @return Unliked successfully (status code 204)
+     */
+    @Operation(
+        operationId = "unlikePost",
+        summary = "Unlike a post",
+        tags = { "likes" },
+        responses = {
+            @ApiResponse(responseCode = "204", description = "Unliked successfully")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.DELETE,
+        value = LikesApi.PATH_UNLIKE_POST
+    )
+    default ResponseEntity<Void> unlikePost(
+        @NotNull @Parameter(name = "post_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("post_id") Long postId,
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo
+    ) {
+        return getDelegate().unlikePost(postId, xUserinfo);
     }
 
 }

@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-11T14:36:31.411887001+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-18T07:05:13.042309488+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "comments", description = "the comments API")
 public interface CommentsApi {
@@ -43,15 +43,50 @@ public interface CommentsApi {
         return new CommentsApiDelegate() {};
     }
 
-    String PATH_API_V1_COMMENTS_COMMENT_ID_DELETE = "/api/v1/comments/{comment_id}";
+    String PATH_CREATE_COMMENT = "/api/v1/comments";
+    /**
+     * POST /api/v1/comments : Create a comment or reply
+     * Send &#x60;parentId&#x60; to reply, leave null for root comment.
+     *
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
+     * @param commentCreateRequest  (required)
+     * @return Comment created (status code 201)
+     */
+    @Operation(
+        operationId = "createComment",
+        summary = "Create a comment or reply",
+        description = "Send `parentId` to reply, leave null for root comment.",
+        tags = { "comments" },
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Comment created", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = CommentResponse.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.POST,
+        value = CommentsApi.PATH_CREATE_COMMENT,
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    default ResponseEntity<CommentResponse> createComment(
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo,
+        @Parameter(name = "CommentCreateRequest", description = "", required = true) @Valid @RequestBody CommentCreateRequest commentCreateRequest
+    ) {
+        return getDelegate().createComment(xUserinfo, commentCreateRequest);
+    }
+
+
+    String PATH_DELETE_COMMENT = "/api/v1/comments/{comment_id}";
     /**
      * DELETE /api/v1/comments/{comment_id} : Soft delete a comment
      *
      * @param commentId  (required)
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @return Deleted (status code 204)
      */
     @Operation(
-        operationId = "apiV1CommentsCommentIdDelete",
+        operationId = "deleteComment",
         summary = "Soft delete a comment",
         tags = { "comments" },
         responses = {
@@ -60,27 +95,29 @@ public interface CommentsApi {
     )
     @RequestMapping(
         method = RequestMethod.DELETE,
-        value = CommentsApi.PATH_API_V1_COMMENTS_COMMENT_ID_DELETE
+        value = CommentsApi.PATH_DELETE_COMMENT
     )
-    default ResponseEntity<Void> apiV1CommentsCommentIdDelete(
-        @NotNull @Parameter(name = "comment_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("comment_id") UUID commentId
+    default ResponseEntity<Void> deleteComment(
+        @NotNull @Parameter(name = "comment_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("comment_id") UUID commentId,
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo
     ) {
-        return getDelegate().apiV1CommentsCommentIdDelete(commentId);
+        return getDelegate().deleteComment(commentId, xUserinfo);
     }
 
 
-    String PATH_API_V1_COMMENTS_COMMENT_ID_PUT = "/api/v1/comments/{comment_id}";
+    String PATH_EDIT_COMMENT = "/api/v1/comments/{comment_id}";
     /**
      * PUT /api/v1/comments/{comment_id} : Update comment content
      * User can only edit the content, not the postId or parentId.
      *
      * @param commentId  (required)
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @param commentUpdateRequest  (required)
      * @return Updated successfully (status code 200)
      *         or Not authorized to edit this comment (status code 403)
      */
     @Operation(
-        operationId = "apiV1CommentsCommentIdPut",
+        operationId = "editComment",
         summary = "Update comment content",
         description = "User can only edit the content, not the postId or parentId.",
         tags = { "comments" },
@@ -93,84 +130,20 @@ public interface CommentsApi {
     )
     @RequestMapping(
         method = RequestMethod.PUT,
-        value = CommentsApi.PATH_API_V1_COMMENTS_COMMENT_ID_PUT,
+        value = CommentsApi.PATH_EDIT_COMMENT,
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<CommentResponse> apiV1CommentsCommentIdPut(
+    default ResponseEntity<CommentResponse> editComment(
         @NotNull @Parameter(name = "comment_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("comment_id") UUID commentId,
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo,
         @Parameter(name = "CommentUpdateRequest", description = "", required = true) @Valid @RequestBody CommentUpdateRequest commentUpdateRequest
     ) {
-        return getDelegate().apiV1CommentsCommentIdPut(commentId, commentUpdateRequest);
+        return getDelegate().editComment(commentId, xUserinfo, commentUpdateRequest);
     }
 
 
-    String PATH_API_V1_COMMENTS_COMMENT_ID_REPLIES_GET = "/api/v1/comments/{comment_id}/replies";
-    /**
-     * GET /api/v1/comments/{comment_id}/replies : Get replies of a comment (Lazy loading)
-     *
-     * @param commentId  (required)
-     * @param cursor  (optional)
-     * @param limit  (optional, default to 5)
-     * @return List of replies (status code 200)
-     */
-    @Operation(
-        operationId = "apiV1CommentsCommentIdRepliesGet",
-        summary = "Get replies of a comment (Lazy loading)",
-        tags = { "comments" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "List of replies", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CommentListResponse.class))
-            })
-        }
-    )
-    @RequestMapping(
-        method = RequestMethod.GET,
-        value = CommentsApi.PATH_API_V1_COMMENTS_COMMENT_ID_REPLIES_GET,
-        produces = { "application/json" }
-    )
-    default ResponseEntity<CommentListResponse> apiV1CommentsCommentIdRepliesGet(
-        @NotNull @Parameter(name = "comment_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("comment_id") UUID commentId,
-        @Parameter(name = "cursor", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "cursor", required = false) @Nullable String cursor,
-        @Parameter(name = "limit", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "limit", required = false, defaultValue = "5") Integer limit
-    ) {
-        return getDelegate().apiV1CommentsCommentIdRepliesGet(commentId, cursor, limit);
-    }
-
-
-    String PATH_API_V1_COMMENTS_POST = "/api/v1/comments";
-    /**
-     * POST /api/v1/comments : Create a comment or reply
-     * Send &#x60;parentId&#x60; to reply, leave null for root comment.
-     *
-     * @param commentCreateRequest  (required)
-     * @return Comment created (status code 201)
-     */
-    @Operation(
-        operationId = "apiV1CommentsPost",
-        summary = "Create a comment or reply",
-        description = "Send `parentId` to reply, leave null for root comment.",
-        tags = { "comments" },
-        responses = {
-            @ApiResponse(responseCode = "201", description = "Comment created", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CommentResponse.class))
-            })
-        }
-    )
-    @RequestMapping(
-        method = RequestMethod.POST,
-        value = CommentsApi.PATH_API_V1_COMMENTS_POST,
-        produces = { "application/json" },
-        consumes = { "application/json" }
-    )
-    default ResponseEntity<CommentResponse> apiV1CommentsPost(
-        @Parameter(name = "CommentCreateRequest", description = "", required = true) @Valid @RequestBody CommentCreateRequest commentCreateRequest
-    ) {
-        return getDelegate().apiV1CommentsPost(commentCreateRequest);
-    }
-
-
-    String PATH_API_V1_POSTS_POST_ID_COMMENTS_GET = "/api/v1/posts/{post_id}/comments";
+    String PATH_GET_ALL_COMMENTS_ON_POST = "/api/v1/posts/{post_id}/comments";
     /**
      * GET /api/v1/posts/{post_id}/comments : Get root comment for a post
      * Fetches only top-level comments (parentId &#x3D; null).  Use &#x60;replyCount&#x60; in response to decide whether to fetch replies. 
@@ -181,7 +154,7 @@ public interface CommentsApi {
      * @return List of comments (status code 200)
      */
     @Operation(
-        operationId = "apiV1PostsPostIdCommentsGet",
+        operationId = "getAllCommentsOnPost",
         summary = "Get root comment for a post",
         description = "Fetches only top-level comments (parentId = null).  Use `replyCount` in response to decide whether to fetch replies. ",
         tags = { "comments" },
@@ -193,15 +166,48 @@ public interface CommentsApi {
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = CommentsApi.PATH_API_V1_POSTS_POST_ID_COMMENTS_GET,
+        value = CommentsApi.PATH_GET_ALL_COMMENTS_ON_POST,
         produces = { "application/json" }
     )
-    default ResponseEntity<CommentListResponse> apiV1PostsPostIdCommentsGet(
+    default ResponseEntity<CommentListResponse> getAllCommentsOnPost(
         @NotNull @Parameter(name = "post_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("post_id") Long postId,
         @Parameter(name = "cursor", description = "ID/Time cursor for pagination", in = ParameterIn.QUERY) @Valid @RequestParam(value = "cursor", required = false) @Nullable String cursor,
         @Parameter(name = "limit", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit
     ) {
-        return getDelegate().apiV1PostsPostIdCommentsGet(postId, cursor, limit);
+        return getDelegate().getAllCommentsOnPost(postId, cursor, limit);
+    }
+
+
+    String PATH_GET_ALL_REPLIES_OF_COMMENT = "/api/v1/comments/{comment_id}/replies";
+    /**
+     * GET /api/v1/comments/{comment_id}/replies : Get replies of a comment (Lazy loading)
+     *
+     * @param commentId  (required)
+     * @param cursor  (optional)
+     * @param limit  (optional, default to 5)
+     * @return List of replies (status code 200)
+     */
+    @Operation(
+        operationId = "getAllRepliesOfComment",
+        summary = "Get replies of a comment (Lazy loading)",
+        tags = { "comments" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "List of replies", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = CommentListResponse.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = CommentsApi.PATH_GET_ALL_REPLIES_OF_COMMENT,
+        produces = { "application/json" }
+    )
+    default ResponseEntity<CommentListResponse> getAllRepliesOfComment(
+        @NotNull @Parameter(name = "comment_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("comment_id") UUID commentId,
+        @Parameter(name = "cursor", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "cursor", required = false) @Nullable String cursor,
+        @Parameter(name = "limit", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "limit", required = false, defaultValue = "5") Integer limit
+    ) {
+        return getDelegate().getAllRepliesOfComment(commentId, cursor, limit);
     }
 
 }

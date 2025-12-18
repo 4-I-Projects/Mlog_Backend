@@ -4,11 +4,8 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
+import java.util.UUID;
 import org.springframework.lang.Nullable;
-import java.util.NoSuchElementException;
-import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -22,16 +19,16 @@ import jakarta.annotation.Generated;
  * UserSummary
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-11T14:36:31.411887001+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-18T07:05:13.042309488+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
 public class UserSummary {
 
-  private @Nullable Integer id;
+  private @Nullable UUID id;
 
   private @Nullable String username;
 
-  private JsonNullable<String> avatarUrl = JsonNullable.<String>undefined();
+  private @Nullable String avatarUrl = null;
 
-  public UserSummary id(@Nullable Integer id) {
+  public UserSummary id(@Nullable UUID id) {
     this.id = id;
     return this;
   }
@@ -40,14 +37,14 @@ public class UserSummary {
    * Get id
    * @return id
    */
-  
+  @Valid 
   @Schema(name = "id", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("id")
-  public @Nullable Integer getId() {
+  public @Nullable UUID getId() {
     return id;
   }
 
-  public void setId(@Nullable Integer id) {
+  public void setId(@Nullable UUID id) {
     this.id = id;
   }
 
@@ -71,8 +68,8 @@ public class UserSummary {
     this.username = username;
   }
 
-  public UserSummary avatarUrl(String avatarUrl) {
-    this.avatarUrl = JsonNullable.of(avatarUrl);
+  public UserSummary avatarUrl(@Nullable String avatarUrl) {
+    this.avatarUrl = avatarUrl;
     return this;
   }
 
@@ -83,11 +80,11 @@ public class UserSummary {
   
   @Schema(name = "avatarUrl", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("avatarUrl")
-  public JsonNullable<String> getAvatarUrl() {
+  public @Nullable String getAvatarUrl() {
     return avatarUrl;
   }
 
-  public void setAvatarUrl(JsonNullable<String> avatarUrl) {
+  public void setAvatarUrl(@Nullable String avatarUrl) {
     this.avatarUrl = avatarUrl;
   }
 
@@ -102,23 +99,12 @@ public class UserSummary {
     UserSummary userSummary = (UserSummary) o;
     return Objects.equals(this.id, userSummary.id) &&
         Objects.equals(this.username, userSummary.username) &&
-        equalsNullable(this.avatarUrl, userSummary.avatarUrl);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+        Objects.equals(this.avatarUrl, userSummary.avatarUrl);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, hashCodeNullable(avatarUrl));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(id, username, avatarUrl);
   }
 
   @Override

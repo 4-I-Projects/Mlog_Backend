@@ -6,6 +6,7 @@
 package com.mlog.engagement.api;
 
 import org.springframework.lang.Nullable;
+import java.util.UUID;
 import com.mlog.engagement.model.UserListResponse;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-11T14:36:31.411887001+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-18T20:05:32.776621850+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "follows", description = "the follows API")
 public interface FollowsApi {
@@ -39,44 +40,19 @@ public interface FollowsApi {
         return new FollowsApiDelegate() {};
     }
 
-    String PATH_API_V1_USERS_TARGET_USER_ID_FOLLOW_DELETE = "/api/v1/users/{target_user_id}/follow";
-    /**
-     * DELETE /api/v1/users/{target_user_id}/follow : Unfollow a user
-     *
-     * @param targetUserId  (required)
-     * @return Unfollowed successfully (status code 204)
-     */
-    @Operation(
-        operationId = "apiV1UsersTargetUserIdFollowDelete",
-        summary = "Unfollow a user",
-        tags = { "follows" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Unfollowed successfully")
-        }
-    )
-    @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = FollowsApi.PATH_API_V1_USERS_TARGET_USER_ID_FOLLOW_DELETE
-    )
-    default ResponseEntity<Void> apiV1UsersTargetUserIdFollowDelete(
-        @NotNull @Parameter(name = "target_user_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("target_user_id") Integer targetUserId
-    ) {
-        return getDelegate().apiV1UsersTargetUserIdFollowDelete(targetUserId);
-    }
-
-
-    String PATH_API_V1_USERS_TARGET_USER_ID_FOLLOW_POST = "/api/v1/users/{target_user_id}/follow";
+    String PATH_FOLLOW_USER = "/api/v1/users/{target_user_id}/follow";
     /**
      * POST /api/v1/users/{target_user_id}/follow : Follow a user (author)
      * Action: Current logged-in user follows &#x60;target_user_id&#x60;. Use case: Use this when clicking \&quot;Follow\&quot; on a Profile or on a Post (get authorId from post data). 
      *
      * @param targetUserId The ID of the user/author to follow (required)
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @return Followed successfully (status code 204)
      *         or Cannot follow yourself (status code 400)
      *         or Already following (status code 409)
      */
     @Operation(
-        operationId = "apiV1UsersTargetUserIdFollowPost",
+        operationId = "followUser",
         summary = "Follow a user (author)",
         description = "Action: Current logged-in user follows `target_user_id`. Use case: Use this when clicking \"Follow\" on a Profile or on a Post (get authorId from post data). ",
         tags = { "follows" },
@@ -88,27 +64,29 @@ public interface FollowsApi {
     )
     @RequestMapping(
         method = RequestMethod.POST,
-        value = FollowsApi.PATH_API_V1_USERS_TARGET_USER_ID_FOLLOW_POST
+        value = FollowsApi.PATH_FOLLOW_USER
     )
-    default ResponseEntity<Void> apiV1UsersTargetUserIdFollowPost(
-        @NotNull @Parameter(name = "target_user_id", description = "The ID of the user/author to follow", required = true, in = ParameterIn.PATH) @PathVariable("target_user_id") Integer targetUserId
+    default ResponseEntity<Void> followUser(
+        @NotNull @Parameter(name = "target_user_id", description = "The ID of the user/author to follow", required = true, in = ParameterIn.PATH) @PathVariable("target_user_id") UUID targetUserId,
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo
     ) {
-        return getDelegate().apiV1UsersTargetUserIdFollowPost(targetUserId);
+        return getDelegate().followUser(targetUserId, xUserinfo);
     }
 
 
-    String PATH_API_V1_USERS_USER_ID_FOLLOWERS_GET = "/api/v1/users/{user_id}/followers";
+    String PATH_GET_ALL_FOLLOWERS = "/api/v1/users/{user_id}/followers";
     /**
      * GET /api/v1/users/{user_id}/followers : Get list of followers
      * List of people who are following &#x60;user_id&#x60;.
      *
      * @param userId  (required)
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @param page  (optional, default to 1)
      * @param limit  (optional, default to 20)
      * @return List of followers (status code 200)
      */
     @Operation(
-        operationId = "apiV1UsersUserIdFollowersGet",
+        operationId = "getAllFollowers",
         summary = "Get list of followers",
         description = "List of people who are following `user_id`.",
         tags = { "follows" },
@@ -120,30 +98,32 @@ public interface FollowsApi {
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = FollowsApi.PATH_API_V1_USERS_USER_ID_FOLLOWERS_GET,
+        value = FollowsApi.PATH_GET_ALL_FOLLOWERS,
         produces = { "application/json" }
     )
-    default ResponseEntity<UserListResponse> apiV1UsersUserIdFollowersGet(
-        @NotNull @Parameter(name = "user_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("user_id") Integer userId,
+    default ResponseEntity<UserListResponse> getAllFollowers(
+        @NotNull @Parameter(name = "user_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("user_id") UUID userId,
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo,
         @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
         @Parameter(name = "limit", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "limit", required = false, defaultValue = "20") Integer limit
     ) {
-        return getDelegate().apiV1UsersUserIdFollowersGet(userId, page, limit);
+        return getDelegate().getAllFollowers(userId, xUserinfo, page, limit);
     }
 
 
-    String PATH_API_V1_USERS_USER_ID_FOLLOWING_GET = "/api/v1/users/{user_id}/following";
+    String PATH_GET_ALL_FOLLOWING = "/api/v1/users/{user_id}/following";
     /**
      * GET /api/v1/users/{user_id}/following : Get list of following
      * List of people that &#x60;user_id&#x60; is following.
      *
      * @param userId  (required)
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
      * @param page  (optional, default to 1)
      * @param limit  (optional, default to 20)
      * @return List of people being followed (status code 200)
      */
     @Operation(
-        operationId = "apiV1UsersUserIdFollowingGet",
+        operationId = "getAllFollowing",
         summary = "Get list of following",
         description = "List of people that `user_id` is following.",
         tags = { "follows" },
@@ -155,15 +135,44 @@ public interface FollowsApi {
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = FollowsApi.PATH_API_V1_USERS_USER_ID_FOLLOWING_GET,
+        value = FollowsApi.PATH_GET_ALL_FOLLOWING,
         produces = { "application/json" }
     )
-    default ResponseEntity<UserListResponse> apiV1UsersUserIdFollowingGet(
-        @NotNull @Parameter(name = "user_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("user_id") Integer userId,
+    default ResponseEntity<UserListResponse> getAllFollowing(
+        @NotNull @Parameter(name = "user_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("user_id") UUID userId,
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo,
         @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
         @Parameter(name = "limit", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "limit", required = false, defaultValue = "20") Integer limit
     ) {
-        return getDelegate().apiV1UsersUserIdFollowingGet(userId, page, limit);
+        return getDelegate().getAllFollowing(userId, xUserinfo, page, limit);
+    }
+
+
+    String PATH_UNFOLLOW_USER = "/api/v1/users/{target_user_id}/follow";
+    /**
+     * DELETE /api/v1/users/{target_user_id}/follow : Unfollow a user
+     *
+     * @param targetUserId  (required)
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
+     * @return Unfollowed successfully (status code 204)
+     */
+    @Operation(
+        operationId = "unfollowUser",
+        summary = "Unfollow a user",
+        tags = { "follows" },
+        responses = {
+            @ApiResponse(responseCode = "204", description = "Unfollowed successfully")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.DELETE,
+        value = FollowsApi.PATH_UNFOLLOW_USER
+    )
+    default ResponseEntity<Void> unfollowUser(
+        @NotNull @Parameter(name = "target_user_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("target_user_id") UUID targetUserId,
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo
+    ) {
+        return getDelegate().unfollowUser(targetUserId, xUserinfo);
     }
 
 }

@@ -13,12 +13,13 @@ import java.util.UUID;
 
 @Data
 @Entity
-public class PostLikeEntity {
+public class LikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
 
     Long postId;
+    UUID commentId;
     UUID userId;
 
     @CreatedDate

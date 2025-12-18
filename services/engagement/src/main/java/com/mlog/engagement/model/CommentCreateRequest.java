@@ -4,12 +4,8 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.util.Arrays;
 import java.util.UUID;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.lang.Nullable;
-import java.util.NoSuchElementException;
-import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -23,12 +19,12 @@ import jakarta.annotation.Generated;
  * CommentCreateRequest
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-11T14:36:31.411887001+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-17T15:41:58.906115920+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
 public class CommentCreateRequest {
 
   private Long postId;
 
-  private JsonNullable<UUID> parentId = JsonNullable.<UUID>undefined();
+  private @Nullable UUID parentId = null;
 
   private String content;
 
@@ -64,8 +60,8 @@ public class CommentCreateRequest {
     this.postId = postId;
   }
 
-  public CommentCreateRequest parentId(UUID parentId) {
-    this.parentId = JsonNullable.of(parentId);
+  public CommentCreateRequest parentId(@Nullable UUID parentId) {
+    this.parentId = parentId;
     return this;
   }
 
@@ -76,11 +72,11 @@ public class CommentCreateRequest {
   @Valid 
   @Schema(name = "parentId", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("parentId")
-  public JsonNullable<UUID> getParentId() {
+  public @Nullable UUID getParentId() {
     return parentId;
   }
 
-  public void setParentId(JsonNullable<UUID> parentId) {
+  public void setParentId(@Nullable UUID parentId) {
     this.parentId = parentId;
   }
 
@@ -114,24 +110,13 @@ public class CommentCreateRequest {
     }
     CommentCreateRequest commentCreateRequest = (CommentCreateRequest) o;
     return Objects.equals(this.postId, commentCreateRequest.postId) &&
-        equalsNullable(this.parentId, commentCreateRequest.parentId) &&
+        Objects.equals(this.parentId, commentCreateRequest.parentId) &&
         Objects.equals(this.content, commentCreateRequest.content);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(postId, hashCodeNullable(parentId), content);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(postId, parentId, content);
   }
 
   @Override
