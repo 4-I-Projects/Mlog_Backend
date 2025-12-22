@@ -1,7 +1,7 @@
 package com.mlog.user.model;
 
 import java.net.URI;
-import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -22,6 +22,23 @@ import jakarta.annotation.Generated;
 
 @JsonTypeName("userRequest")
 public class UserRequest {
+
+  @JsonProperty("id")
+  private UUID id;
+
+  public UserRequest id(UUID id) {
+    this.id = id;
+    return this;
+  }
+
+  @Schema(name = "id", description = "User UUID from Keycloak")
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
   private String username;
 
