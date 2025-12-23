@@ -17,8 +17,8 @@ public class CloudStorageService {
     @Value("${gcp.storage.bucket-name}")
     private String bucketName;
 
-    @Value("${gcp.storage.credentials-path}")
-    private String credentialsPath;
+//    @Value("${gcp.storage.credentials-path}")
+//    private String credentialsPath;
 
     private final ResourceLoader resourceLoader;
 
@@ -28,11 +28,14 @@ public class CloudStorageService {
 
     public String uploadFile(MultipartFile file) throws IOException {
         // 1. Khởi tạo Storage với file credentials
-        Resource resource = resourceLoader.getResource(credentialsPath);
-        Storage storage = StorageOptions.newBuilder()
-                .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
-                .build()
-                .getService();
+//        Resource resource = resourceLoader.getResource(credentialsPath);
+//        Storage storage = StorageOptions.newBuilder()
+//                .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
+//                .build()
+//                .getService();
+
+//         Nếu không tìm thấy file credentials, mặc định nó sẽ dùng tài khoản đã login trên máy
+        Storage storage = StorageOptions.getDefaultInstance().getService();
 
         // 2. Tạo tên file duy nhất để tránh trùng lặp
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
