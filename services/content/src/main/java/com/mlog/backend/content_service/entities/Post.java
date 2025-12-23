@@ -4,8 +4,6 @@ import com.mlog.backend.content_service.utils.Auditable;
 import com.mlog.backend.content_service.utils.PostStatus;
 import jakarta.persistence.*;
 
-import jakarta.persistence.*;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +11,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -48,7 +47,7 @@ public class Post extends Auditable {
 
     // author_id
     @Column(name = "author_id", nullable = false)
-    private Long authorId;
+    private UUID authorId;
 
     // Mối quan hệ Many-to-Many với Tags (thông qua bảng PostTag)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
