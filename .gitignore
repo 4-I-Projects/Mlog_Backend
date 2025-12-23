@@ -6,8 +6,10 @@ openapitools.json
 
 tools/
 .idea/
-google-natural-language-ai-keys.json
-google-cloud-storage-keys.json
 *.jar
 .env
 .venv
+
+# DO NOT DELETE THESE FILES
+google-natural-language-ai-keys.json
+google-cloud-storage-keys.json
