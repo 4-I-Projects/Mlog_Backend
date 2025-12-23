@@ -25,4 +25,4 @@ spring:
 app:
   services:
     user:
-      url: {USER_SERVICE_URL:http://localhost:8083}
+      url: http://localhost:8080
