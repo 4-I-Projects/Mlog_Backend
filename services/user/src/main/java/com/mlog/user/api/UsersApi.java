@@ -5,7 +5,9 @@
  */
 package com.mlog.user.api;
 
+import com.mlog.user.model.PatchUserRequest;
 import java.util.UUID;
+import com.mlog.user.model.UpdateUserRequest;
 import com.mlog.user.model.UserRequest;
 import com.mlog.user.model.UserResponse;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import jakarta.annotation.Generated;
 
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-22T20:43:50.450487411+07:00[Asia/Ho_Chi_Minh]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "users", description = "the users API")
 public interface UsersApi {
@@ -154,6 +157,78 @@ public interface UsersApi {
         
     ) {
         return getDelegate().listAllUsers();
+    }
+
+
+    String PATH_PATCH_CURRENT_USER = "/api/v1/users/me";
+    /**
+     * PATCH /api/v1/users/me : Edit my info
+     *
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
+     * @param patchUserRequest  (required)
+     * @return User updated successfully (status code 200)
+     *         or Invalid request (status code 400)
+     *         or Unauthorized (status code 401)
+     */
+    @Operation(
+        operationId = "patchCurrentUser",
+        summary = "Edit my info",
+        tags = { "users" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.PATCH,
+        value = UsersApi.PATH_PATCH_CURRENT_USER,
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    default ResponseEntity<UserResponse> patchCurrentUser(
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo,
+        @Parameter(name = "PatchUserRequest", description = "", required = true) @Valid @RequestBody PatchUserRequest patchUserRequest
+    ) {
+        return getDelegate().patchCurrentUser(xUserinfo, patchUserRequest);
+    }
+
+
+    String PATH_PUT_CURRENT_USER = "/api/v1/users/me";
+    /**
+     * PUT /api/v1/users/me : Edit my info
+     *
+     * @param xUserinfo A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: &#x60;{\&quot;sub\&quot;: \&quot;user-uuid\&quot;, \&quot;realm_access\&quot;: {\&quot;roles\&quot;: [\&quot;user\&quot;]}, \&quot;email\&quot;: \&quot;user@example.com\&quot;}&#x60; (required)
+     * @param updateUserRequest  (required)
+     * @return User updated successfully (status code 200)
+     *         or Invalid request (status code 400)
+     *         or Unauthorized (status code 401)
+     */
+    @Operation(
+        operationId = "putCurrentUser",
+        summary = "Edit my info",
+        tags = { "users" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.PUT,
+        value = UsersApi.PATH_PUT_CURRENT_USER,
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    default ResponseEntity<UserResponse> putCurrentUser(
+        @NotNull @Parameter(name = "X-Userinfo", description = "A base64-encoded JSON object containing user claims forwarded from the API gateway. After decoding, the JSON will contain user information such as subject (user ID), roles, etc. Example decoded object: `{\"sub\": \"user-uuid\", \"realm_access\": {\"roles\": [\"user\"]}, \"email\": \"user@example.com\"}`", required = true, in = ParameterIn.HEADER) @RequestHeader(value = "X-Userinfo", required = true) String xUserinfo,
+        @Parameter(name = "UpdateUserRequest", description = "", required = true) @Valid @RequestBody UpdateUserRequest updateUserRequest
+    ) {
+        return getDelegate().putCurrentUser(xUserinfo, updateUserRequest);
     }
 
 }

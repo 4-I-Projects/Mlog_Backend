@@ -1,5 +1,6 @@
 package com.mlog.user.api;
 
+import java.util.UUID;
 import com.mlog.user.model.UserRequest;
 import com.mlog.user.model.UserResponse;
 
