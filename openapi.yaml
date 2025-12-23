@@ -19,7 +19,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/userResponse"
+                  $ref: "#/components/schemas/UserResponse"
     post:
       summary: Create user
       operationId: createUser
@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/userResponse"
+                $ref: "#/components/schemas/UserResponse"
 
   /api/v1/users/{user_id}:
     get:
@@ -67,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/userResponse"
+                $ref: "#/components/schemas/UserResponse"
 
   /api/v1/users/me:
     get:
@@ -92,10 +92,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/userResponse"
+                $ref: "#/components/schemas/UserResponse"
     put:
       summary: Edit my info
-      operationId: updateCurrentUser
+      operationId: putCurrentUser
       tags: [users]
       parameters:
         - name: X-Userinfo
@@ -109,23 +109,69 @@ paths:
             type: string
             format: base64
             example: eyJzdWIiOiAiMTIzNDU2Nzg5MCIsICJuYW1lIjogIkpvaG4gRG9lIiwgImlhdCI6IDE1MTYyMzkwMjJ9
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/UpdateUserRequest"
-      responses: 
-      "200":
-        description: User updated successfully
+      requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserResponse"
-      "400":
-        description: Invalid request
-      "401":
-        description: Unauthorized
+              $ref: "#/components/schemas/UpdateUserRequest"
+      responses: 
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
+    patch:
+      summary: Edit my info
+      operationId: patchCurrentUser
+      tags: [users]
+      parameters:
+        - name: X-Userinfo
+          in: header
+          required: true
+          description: >-
+            A base64-encoded JSON object containing user claims forwarded from the API gateway.
+            After decoding, the JSON will contain user information such as subject (user ID), roles, etc.
+            Example decoded object: `{"sub": "user-uuid", "realm_access": {"roles": ["user"]}, "email": "user@example.com"}`
+          schema:
+            type: string
+            format: base64
+            example: eyJzdWIiOiAiMTIzNDU2Nzg5MCIsICJuYW1lIjogIkpvaG4gRG9lIiwgImlhdCI6IDE1MTYyMzkwMjJ9
+        - name: X-Access-Token
+          in: header
+          required: true
+          description: >-
+            The original OAuth 2.0 access token issued by the identity provider and
+            validated by the API gateway.
+            This token is forwarded to downstream services for use cases such as
+            calling other protected services, auditing, or token introspection.
+            The backend service MUST NOT re-validate this token for authentication.
+          schema:
+            type: string
+            format: jwt
+            example: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLXV1aWQiLCJpc3MiOiJodHRwczovL2lkcC5leGFtcGxlLmNvbS9yZWFsbXMvZGVmYXVsdCIsImV4cCI6MTc2NjAwMDQzMn0.signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchUserRequest"
+      responses: 
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized
 
 
   # some basic admin routes
@@ -718,7 +764,7 @@ components:
           example: https://ipfs.io/ipfs/QmQA66xJFVcP5h8fs1PJt3fXeGwVPB55Q6o8PwEx1Jc2kz
       required:
         - username
-    userUpdateRequest:
+    UpdateUserRequest:
       type: object
       properties:
         username:
@@ -738,7 +784,32 @@ components:
           description: Profile picture for the post.
           example: https://ipfs.io/ipfs/QmQA66xJFVcP5h8fs1PJt3fXeGwVPB55Q6o8PwEx1Jc2kz
       additionalProperties: false
-    userResponse:
+      required:
+        - username
+        - display_name
+        - bio
+        - avatar_url
+    PatchUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: username, must be unique
+          example: 6myduck10293
+        display_name:
+          type: string
+          description: user's display name
+          example: 6myduck
+        bio:
+          type: string
+          description: user's bio
+          example: I'm the lord of all ducks
+        avatar_url: 
+          type: string
+          description: Profile picture for the post.
+          example: https://ipfs.io/ipfs/QmQA66xJFVcP5h8fs1PJt3fXeGwVPB55Q6o8PwEx1Jc2kz
+      additionalProperties: false
+    UserResponse:
       type: object
       properties:
         id:
