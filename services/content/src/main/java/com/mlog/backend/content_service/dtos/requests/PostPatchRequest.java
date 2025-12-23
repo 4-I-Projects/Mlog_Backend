@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 public class PostPatchRequest {
@@ -26,7 +27,7 @@ public class PostPatchRequest {
     // ==========================================
 
     // ID của Tác giả (Có thể thay đổi tác giả bài viết)
-    private Long authorId;
+    private UUID authorId;
 
     // ID của Category (Có thể thay đổi Danh mục)
     private Long categoryId;

@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -23,7 +24,7 @@ public class PostResponse {
     private LocalDateTime scheduledAt;
     private LocalDateTime deletedAt;
 
-    private Long authorId;
+    private UUID authorId;
 
     private CategoryResponse category;
 

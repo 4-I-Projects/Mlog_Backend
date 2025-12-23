@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 public class PostCreateRequest {
@@ -19,7 +20,7 @@ public class PostCreateRequest {
     private String body;
 
     @NotNull(message = "Author ID is required")
-    private Long authorId;
+    private UUID authorId;
 
     @NotNull(message = "Category ID is required")
     private Long categoryId;
