@@ -45,7 +45,11 @@ curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/js
     "name": "content_route",
     "uris": [
         "/api/v1/posts",
-        "/api/v1/posts/*"
+        "/api/v1/posts/*",
+        "/api/v1/tags",
+        "/api/v1/tags/*",
+        "/api/v1/categories",
+        "/api/v1/categories/*"
     ],
     "methods": [
         "GET",
@@ -90,16 +94,27 @@ curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/js
 }'
 
 curl localhost:9180/apisix/admin/global_rules/1 -X PUT -H 'Content-Type: application/json' -d '{
-    "id": "1",
-    "plugins": {
-        "cors": {},
-        "openid-connect": {
-            "client_id": "dummy-public-client", 
-            "client_secret": "dummy-secret-not-used", 
-            "discovery": "http://keycloak:8080/realms/mlog/.well-known/openid-configuration",
-            "bearer_only": true,
-            "use_jwks": true,
-            "token_signing_alg_values_expected": "RS256"
-        }
+  "id": "1",
+  "plugins": {
+    "cors": {
+      "allow_credential": false,
+      "allow_headers": "*",
+      "allow_methods": "*",
+      "allow_origins": "*",
+      "expose_headers": "*",
+      "max_age": 5
+    },
+    "openid-connect": {
+      "client_id": "dummy-public-client",
+      "client_secret": "dummy-secret-not-used",
+      "discovery": "http://keycloak:8080/realms/mlog/.well-known/openid-configuration",
+      "bearer_only": true,
+      "use_jwks": true,
+      "token_signing_alg_values_expected": "RS256",
+      "_meta": {
+        "disable": false
+      }
     }
-}'
+  }
+}
+'

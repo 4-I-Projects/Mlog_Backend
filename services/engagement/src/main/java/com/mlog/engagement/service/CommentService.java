@@ -31,7 +31,12 @@ public class CommentService implements CommentsApiDelegate {
 
     public ResponseEntity<CommentResponse> createComment(String xUserinfo,
                                                           CommentCreateRequest commentCreateRequest) {
+        String userId = jwtUtils.getClaimAsString(xUserinfo, "sub")
+                .orElseThrow(() -> new IllegalArgumentException("User ID (sub) not found in token"));
+
         CommentEntity commentEntity = commentMapper.toCommentEntity(commentCreateRequest);
+        commentEntity.setId(UUID.fromString(userId));
+
         CommentEntity saved = commentRepository.save(commentEntity);
         return new ResponseEntity<>(commentMapper.toCommentResponse(saved), HttpStatus.CREATED);
     }

@@ -131,8 +131,6 @@ services:
   content_service:
     build: ./services/content
     container_name: content_service
-    ports:
-      - 8080:8080
     networks:
       - mlog
     environment:
