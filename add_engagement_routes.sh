@@ -1,22 +1,22 @@
 #!/bin/bash
 
 # create upstreams
-curl localhost:9180/apisix/admin/upstreams/user_route -X PUT -H 'Content-Type: application/json' -d '{
+curl localhost:9180/apisix/admin/upstreams/user_service -X PUT -H 'Content-Type: application/json' -d '{
   "name": "user_service",
   "nodes": {
-    "user_service:8082": 1
+    "user_service:8080": 1
   }
 }'
-curl localhost:9180/apisix/admin/upstreams/engagement_route -X PUT -H 'Content-Type: application/json' -d '{
+curl localhost:9180/apisix/admin/upstreams/engagement_service -X PUT -H 'Content-Type: application/json' -d '{
   "name": "engagement_service",
   "nodes": {
     "engagement_service:8080": 1
   }
 }'
-curl localhost:9180/apisix/admin/upstreams/content_route -X PUT -H 'Content-Type: application/json' -d '{
+curl localhost:9180/apisix/admin/upstreams/content_service -X PUT -H 'Content-Type: application/json' -d '{
   "name": "content_service",
   "nodes": {
-    "content_service:50051": 1
+    "content_service:8080": 1
   }
 }'
 
@@ -38,7 +38,7 @@ curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/js
         "TRACE",
         "PURGE"
     ],
-    "upstream_id": "user_route"
+    "upstream_id": "user_service"
 }'
 
 curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/json' -d '{
@@ -59,7 +59,7 @@ curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/js
         "TRACE",
         "PURGE"
     ],
-    "upstream_id": "content_route"
+    "upstream_id": "content_service"
 }'
 
 curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/json' -d '{
@@ -86,7 +86,7 @@ curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/js
         "TRACE",
         "PURGE"
     ],
-    "upstream_id": "engagement_route"
+    "upstream_id": "engagement_service"
 }'
 
 curl localhost:9180/apisix/admin/global_rules/1 -X PUT -H 'Content-Type: application/json' -d '{
