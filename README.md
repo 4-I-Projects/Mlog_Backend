@@ -1,9 +1,13 @@
 # How to run
 
 ## 1. Set up Dockerfile for services
-Run the command below in every single service (user, content, engagement)
+Run the command below in every single service (user, engagement)
 ```bash
 ./mvnw clean package 
+```
+Run the command below in services/content/
+```bash
+./mvnw clean compile package -DskipTests
 ```
 
 ## 2. Setup docker compose network
