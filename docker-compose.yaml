@@ -123,6 +123,8 @@ services:
   ai-service:
     build: ./services/ai
     container_name: ai-service
+    environment:
+      - PYTHONUNBUFFERED=1 # Ensures real-time logging
     env_file:
       - .env
     networks:
@@ -137,7 +139,7 @@ services:
       DB_URL: jdbc:mariadb://content-service_db:3306/contentdb
       DB_USER: root
       DB_PASSWORD: admin
-      GRPC_CLIENT_AI_MOOD-service_ADDRESS: static://ai-service:50051
+      GRPC_CLIENT_AI_MOOD_SERVICE_ADDRESS: static://ai-service:50051
     depends_on:
       content-service_db:
         condition: service_healthy
