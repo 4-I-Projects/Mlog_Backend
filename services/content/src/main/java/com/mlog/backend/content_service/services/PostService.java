@@ -3,7 +3,6 @@ package com.mlog.backend.content_service.services;
 import com.mlog.backend.content_service.entities.Post;
 import com.mlog.backend.content_service.entities.Category;
 import com.mlog.backend.content_service.entities.Tag;
-import com.mlog.backend.content_service.utils.Mood;
 import com.mlog.backend.content_service.utils.PostStatus;
 import com.mlog.backend.content_service.dtos.requests.PostCreateRequest;
 import com.mlog.backend.content_service.dtos.requests.PostPatchRequest;
@@ -12,17 +11,14 @@ import com.mlog.backend.content_service.repositories.CategoryRepository;
 import com.mlog.backend.content_service.repositories.TagRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +29,7 @@ public class PostService {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final MoodAnalysisClient moodAnalysisClient;
+    private final AuditorAware<String> auditorAware;
 
     public List<Post> getAllPosts() {
         return postRepository.findAll();
@@ -49,7 +46,6 @@ public class PostService {
 
         post.setTitle(request.getTitle());
         post.setBody(request.getBody());
-        post.setAuthorId(request.getAuthorId());
 
         post.setStatus(request.getStatus() != null ? request.getStatus() : PostStatus.DRAFT);
 
@@ -74,6 +70,8 @@ public class PostService {
         }
 
         post.setMood(moodAnalysisClient.analyze(request.getBody()));
+        String currentUserId = auditorAware.getCurrentAuditor().orElse("SYSTEM");
+        post.setAuthorId(UUID.fromString(currentUserId));
 
         return postRepository.save(post);
     }
@@ -83,7 +81,6 @@ public class PostService {
 
         post.setTitle(request.getTitle());
         post.setBody(request.getBody());
-        post.setAuthorId(request.getAuthorId());
 
         PostStatus newStatus = request.getStatus() != null ? request.getStatus() : PostStatus.DRAFT;
 
