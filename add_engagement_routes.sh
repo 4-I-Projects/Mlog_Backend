@@ -1,22 +1,22 @@
 #!/bin/bash
 
 # create upstreams
-curl localhost:9180/apisix/admin/upstreams/user_service -X PUT -H 'Content-Type: application/json' -d '{
-  "name": "user_service",
+curl localhost:9180/apisix/admin/upstreams/user-service -X PUT -H 'Content-Type: application/json' -d '{
+  "name": "user-service",
   "nodes": {
-    "user_service:8080": 1
+    "user-service:8080": 1
   }
 }'
-curl localhost:9180/apisix/admin/upstreams/engagement_service -X PUT -H 'Content-Type: application/json' -d '{
-  "name": "engagement_service",
+curl localhost:9180/apisix/admin/upstreams/engagement-service -X PUT -H 'Content-Type: application/json' -d '{
+  "name": "engagement-service",
   "nodes": {
-    "engagement_service:8080": 1
+    "engagement-service:8080": 1
   }
 }'
-curl localhost:9180/apisix/admin/upstreams/content_service -X PUT -H 'Content-Type: application/json' -d '{
-  "name": "content_service",
+curl localhost:9180/apisix/admin/upstreams/content-service -X PUT -H 'Content-Type: application/json' -d '{
+  "name": "content-service",
   "nodes": {
-    "content_service:8080": 1
+    "content-service:8080": 1
   }
 }'
 
@@ -38,7 +38,7 @@ curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/js
         "TRACE",
         "PURGE"
     ],
-    "upstream_id": "user_service"
+    "upstream_id": "user-service"
 }'
 
 curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/json' -d '{
@@ -63,7 +63,7 @@ curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/js
         "TRACE",
         "PURGE"
     ],
-    "upstream_id": "content_service"
+    "upstream_id": "content-service"
 }'
 
 curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/json' -d '{
@@ -90,7 +90,7 @@ curl localhost:9180/apisix/admin/routes -X POST -H 'Content-Type: application/js
         "TRACE",
         "PURGE"
     ],
-    "upstream_id": "engagement_service"
+    "upstream_id": "engagement-service"
 }'
 
 curl localhost:9180/apisix/admin/global_rules/1 -X PUT -H 'Content-Type: application/json' -d '{

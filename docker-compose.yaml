@@ -105,15 +105,15 @@ services:
   #     --addr :8181
   #     /policies
 
-  engagement_service:
+  engagement-service:
     build: ./services/engagement
-    container_name: engagement_service
+    container_name: engagement-service
     networks:
       - mlog
 
-  user_service:
+  user-service:
     build: ./services/user
-    container_name: user_service
+    container_name: user-service
     networks:
       - mlog
   #   env_file:
@@ -128,23 +128,23 @@ services:
     networks:
       - mlog
 
-  content_service:
+  content-service:
     build: ./services/content
-    container_name: content_service
+    container_name: content-service
     networks:
       - mlog
     environment:
-      DB_URL: jdbc:mariadb://content_service_db:3306/contentdb
+      DB_URL: jdbc:mariadb://content-service_db:3306/contentdb
       DB_USER: root
       DB_PASSWORD: admin
-      GRPC_CLIENT_AI_MOOD_SERVICE_ADDRESS: static://ai-service:50051
+      GRPC_CLIENT_AI_MOOD-service_ADDRESS: static://ai-service:50051
     depends_on:
-      content_service_db:
+      content-service_db:
         condition: service_healthy
 
-  content_service_db:
+  content-service_db:
     image: mariadb:10.11
-    container_name: content_service_db
+    container_name: content-service_db
     ports:
       - 3306:3306
     networks:
@@ -158,17 +158,17 @@ services:
       timeout: 5s
       retries: 10
 
-  # engagement_service_db:
+  # engagement-service_db:
   #   build: ./services/engagement
-  #   container_name: engagement_service
+  #   container_name: engagement-service
   #   ports:
   #     - 8081:8081
   #   networks:
   #     - mlog
   #
-  # content_service_db:
+  # content-service_db:
   #   image: mariadb:10.11
-  #   container_name: engagement_service_db
+  #   container_name: engagement-service_db
   #   networks:
   #     - mlog
   #   environment:
