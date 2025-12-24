@@ -5,12 +5,12 @@ import com.mlog.engagement.api.CommentsApi;
 import com.mlog.engagement.api.CommentsApiDelegate;
 import com.mlog.engagement.enitty.CommentEntity;
 import com.mlog.engagement.mapper.CommentMapper;
-import com.mlog.engagement.model.CommentCreateRequest;
-import com.mlog.engagement.model.CommentListResponse;
-import com.mlog.engagement.model.CommentResponse;
-import com.mlog.engagement.model.CommentUpdateRequest;
+import com.mlog.engagement.model.*;
+import com.mlog.engagement.openfeign.UserClient;
+import com.mlog.engagement.openfeign.model.UserResponse;
 import com.mlog.engagement.repository.CommentRepository;
 import com.mlog.engagement.utils.JwtUtils;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,15 +27,36 @@ import java.util.UUID;
 public class CommentService implements CommentsApiDelegate {
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
+    private final UserClient userClient;
     private final JwtUtils jwtUtils;
 
+    @Transactional
     public ResponseEntity<CommentResponse> createComment(String xUserinfo,
                                                           CommentCreateRequest commentCreateRequest) {
+        String userId = jwtUtils.getClaimAsString(xUserinfo, "sub")
+                .orElseThrow(() -> new IllegalArgumentException("User ID (sub) not found in token"));
+
         CommentEntity commentEntity = commentMapper.toCommentEntity(commentCreateRequest);
+        commentEntity.setUserId(UUID.fromString(userId));
+
         CommentEntity saved = commentRepository.save(commentEntity);
-        return new ResponseEntity<>(commentMapper.toCommentResponse(saved), HttpStatus.CREATED);
+        ResponseEntity<UserResponse> userEntity = userClient.getUserById(saved.getUserId());
+
+        if (userEntity.getBody() == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        UserSummary userSummary = new UserSummary()
+                .id(saved.getUserId())
+                .avatarUrl(userEntity.getBody().getAvatarUrl())
+                .username(userEntity.getBody().getUsername());
+
+        CommentResponse response = commentMapper.toCommentResponse(saved);
+        response.setUser(userSummary);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @Transactional
     public ResponseEntity<Void> deleteComment(UUID commentId,
                                                String xUserinfo) {
         Optional<CommentEntity> commentEntity = commentRepository.findById(commentId);
@@ -52,6 +73,7 @@ public class CommentService implements CommentsApiDelegate {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Transactional
     public ResponseEntity<CommentResponse> editComment(UUID commentId,
                                                         String xUserinfo,
                                                         CommentUpdateRequest commentUpdateRequest) {
