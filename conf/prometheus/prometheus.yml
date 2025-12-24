@@ -5,11 +5,14 @@ scrape_configs:
   - job_name: prometheus
     static_configs:
       - targets: ["localhost:9090"]
-  - job_name: api_gateway
-    metrics_path: /metrics
+  - job_name: user-service
+    metrics_path: /actuator/prometheus
     static_configs:
-      - targets: ["api-gateway:5000"]
-  - job_name: user_service
-    metrics_path: /metrics
+      - targets: ["user-service:8080"]
+  - job_name: engagement-service
+    metrics_path: /actuator/prometheus
     static_configs:
-      - targets: ["user_service:8081"]
+      - targets: ["engagement-service:8080"]
+global:
+  scrape_interval: 5s     # By default, scrape targets every 15 seconds.
+
