@@ -11,7 +11,6 @@ import com.mlog.backend.content_service.services.PostService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +61,7 @@ public class PostController {
                 .scheduledAt(post.getScheduledAt())
                 .authorId(post.getAuthorId())
                 .category(categoryResponse)
+                .mood(post.getMood())
                 .tags(tagResponses)
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())

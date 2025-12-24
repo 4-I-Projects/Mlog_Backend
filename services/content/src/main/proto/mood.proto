@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_package = "com.example.aiservice";
+option java_multiple_files = true;
+
+service MoodService {
+    rpc AnalyzeMood (MoodRequest) returns (MoodResponse);
+}
+
+message MoodRequest {
+    string text = 1;
+}
+
+message MoodResponse {
+    string mood = 1;
+    float confidence = 2;
+    string explanation = 3;
+}

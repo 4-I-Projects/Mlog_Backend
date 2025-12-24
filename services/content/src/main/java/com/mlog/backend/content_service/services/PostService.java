@@ -3,6 +3,7 @@ package com.mlog.backend.content_service.services;
 import com.mlog.backend.content_service.entities.Post;
 import com.mlog.backend.content_service.entities.Category;
 import com.mlog.backend.content_service.entities.Tag;
+import com.mlog.backend.content_service.utils.Mood;
 import com.mlog.backend.content_service.utils.PostStatus;
 import com.mlog.backend.content_service.dtos.requests.PostCreateRequest;
 import com.mlog.backend.content_service.dtos.requests.PostPatchRequest;
@@ -10,6 +11,7 @@ import com.mlog.backend.content_service.repositories.PostRepository;
 import com.mlog.backend.content_service.repositories.CategoryRepository;
 import com.mlog.backend.content_service.repositories.TagRepository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,16 +27,12 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PostService {
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
+    private final PostRepository postRepository;
+    private final CategoryRepository categoryRepository;
+    private final TagRepository tagRepository;
+    private final MoodAnalysisClient moodAnalysisClient;
 
     public List<Post> getAllPosts() {
         return postRepository.findAll();
@@ -74,6 +72,8 @@ public class PostService {
             }
             post.setTags(tags);
         }
+
+        post.setMood(moodAnalysisClient.analyze(request.getBody()));
 
         return postRepository.save(post);
     }
