@@ -44,14 +44,6 @@ services:
   #     COLLECTOR_OTLP_ENABLED: true
   #   ports:
   #     - "16686:16686"
-  # grafana:
-  #   image: grafana/grafana:11.0.0
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./conf/grafana/provisioning:/etc/grafana/provisioning
-  #     - ./conf/grafana/dashboards:/var/lib/grafana/dashboards
-  #     - ./conf/grafana/config/grafana.ini:/etc/grafana/grafana.ini
 
   keycloak:
   #   image: 10.60.156.72/docker.io/keycloak/keycloak
@@ -189,13 +181,21 @@ services:
   #     - "6379:6379"
   #   networks:
   #     - mlog
-
-  # prometheus:
-  #   image: "prom/prometheus"
+  grafana:
+    image: grafana/grafana:11.0.0
+    ports:
+      - "3000:3000"
   #   volumes:
-  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-  #   ports:
-  #     - "9090:9090"
+  #     - ./conf/grafana/provisioning:/etc/grafana/provisioning
+  #     - ./conf/grafana/dashboards:/var/lib/grafana/dashboards
+  #     - ./conf/grafana/config/grafana.ini:/etc/grafana/grafana.ini
+
+  prometheus:
+    image: "prom/prometheus"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
   
   httpbin:
     image: kennethreitz/httpbin
