@@ -13,6 +13,3 @@ scrape_configs:
     metrics_path: /actuator/prometheus
     static_configs:
       - targets: ["engagement-service:8080"]
-global:
-  scrape_interval: 5s     # By default, scrape targets every 15 seconds.
-
