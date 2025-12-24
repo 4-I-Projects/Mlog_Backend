@@ -73,7 +73,6 @@ public interface UsersApi {
         return getDelegate().createUser(xUserinfo, userRequest);
     }
 
-
     String PATH_GET_CURRENT_USER = "/api/v1/users/me";
     /**
      * GET /api/v1/users/me : Get my user info

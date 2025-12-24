@@ -19,9 +19,6 @@ public class PostCreateRequest {
     @NotBlank(message = "Body content is required")
     private String body;
 
-    @NotNull(message = "Author ID is required")
-    private UUID authorId;
-
     @NotNull(message = "Category ID is required")
     private Long categoryId;
 
