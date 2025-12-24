@@ -1,6 +1,6 @@
 server:
   address: 0.0.0.0
-  port: 8080
+  port: 8081
 spring:
   application:
     name: engagement
@@ -25,4 +25,4 @@ spring:
 app:
   services:
     user:
-      url: http://localhost:8080
+      url: http://user_service:8080
