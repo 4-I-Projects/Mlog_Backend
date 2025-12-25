@@ -1,11 +1,11 @@
 # How to run
 
 ## 1. Set up Dockerfile for services
-Run the command below in every single service (user, engagement)
+Run the command below in user service and engagement service
 ```bash
 ./mvnw clean package 
 ```
-Run the command below in services/content/
+Run the command below in content service
 ```bash
 ./mvnw clean compile package -DskipTests
 ```
