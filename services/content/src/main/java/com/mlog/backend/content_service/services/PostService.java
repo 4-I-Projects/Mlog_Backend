@@ -117,9 +117,13 @@ public class PostService {
         Post post = getPostById(postId);
 
         Optional.ofNullable(request.getTitle()).ifPresent(post::setTitle);
-        Optional.ofNullable(request.getBody()).ifPresent(post::setBody);
         Optional.ofNullable(request.getAuthorId()).ifPresent(post::setAuthorId);
-        Optional.ofNullable(request.getMood()).ifPresent(post::setMood);
+
+        if (request.getBody() != null) {
+            String newMood = moodAnalysisClient.analyze(request.getBody());
+            post.setMood(newMood);
+            post.setBody(request.getBody());
+        }
 
         Optional.ofNullable(request.getStatus()).ifPresent(newStatus -> {
             if (newStatus != post.getStatus()) {
