@@ -5,6 +5,7 @@ spring:
   application:
     name: engagement
   jackson:
+    property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
   datasource:
     url: jdbc:h2:mem:testdb

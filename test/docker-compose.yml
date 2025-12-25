@@ -1,0 +1,15 @@
+services:
+  prometheus:
+    image: "prom/prometheus"
+    volumes:
+      - ./conf/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+  grafana:
+    image: grafana/grafana-enterprise
+    ports:
+      - "3000:3000"
+    # volumes:
+    #   - ./conf/grafana/provisioning:/etc/grafana/provisioning
+    #   - ./conf/grafana/dashboards:/var/lib/grafana/dashboards
+    #   - ./conf/grafana/config/grafana.ini:/etc/grafana/grafana.ini
