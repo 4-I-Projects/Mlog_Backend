@@ -177,4 +177,8 @@ public class PostService {
             postRepository.save(post);
         }
     }
+
+    public List<Post> getPostsByUserId(UUID userId) {
+        return postRepository.findByAuthorId(userId);
+    }
 }

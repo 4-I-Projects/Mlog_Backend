@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -74,7 +75,21 @@ public class PostController {
     // GET /api/v1/posts
     // ==========================================
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
+    public ResponseEntity<List<PostResponse>> getAllPosts(@RequestParam(required = false) String authorId) {
+        if (authorId != null && !authorId.isEmpty()) {
+            UUID authorUuid;
+            try {
+                authorUuid = UUID.fromString(authorId);
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().build();
+            }
+            List<Post> postsByAuthor = postService.getPostsByUserId(authorUuid);
+            List<PostResponse> responseListByAuthor = postsByAuthor.stream()
+                    .map(this::toResponse)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(responseListByAuthor);
+        }
+
         List<Post> posts = postService.getAllPosts();
         List<PostResponse> responseList = posts.stream()
                 .map(this::toResponse)
