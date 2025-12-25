@@ -34,7 +34,6 @@ public class LikeService implements LikesApiDelegate {
                                                                Integer page,
                                                                Integer limit) {
         List<LikeEntity> likeEntities = likeRepository.findAllByPostId(postId);
-        List<UserSummary> userSummaries = likeEntities.stream().map(likeEntity -> new UserSummary().id(likeEntity.getUserId())).toList();
         List<UserSummary> users = new ArrayList<UserSummary>();
         for (LikeEntity likeEntity: likeEntities) {
             ResponseEntity<UserResponse> userResponse = userClient.getUserById(likeEntity.getUserId());
@@ -67,7 +66,7 @@ public class LikeService implements LikesApiDelegate {
                                             String xUserinfo) {
         String userId = jwtUtils.getClaimAsString(xUserinfo, "sub")
                 .orElseThrow(() -> new IllegalArgumentException("User ID (sub) not found in token"));
-        likeRepository.deleteByUserId(UUID.fromString(userId));
+        likeRepository.deleteByUserIdAndPostId(UUID.fromString(userId), postId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

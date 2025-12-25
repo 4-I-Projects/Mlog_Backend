@@ -53,10 +53,9 @@ services:
       - ./keycloak-theme/my-theme:/opt/keycloak/themes/mlog-theme
     command: start-dev --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false
     environment:
-  #     KC_HOSTNAME: ${KC_HOSTNAME}
-  #     KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT}
-  #     KC_HTTP_ENABLED: true
-  #     KC_HOSTNAME_STRICT_HTTPS: false
+      # KC_HOSTNAME: localhost
+      # KC_HTTP_ENABLED: true
+      # KC_HOSTNAME_STRICT_HTTPS: false
       KC_HEALTH_ENABLED: true
       KC_METRICS_ENABLED: true
 
@@ -181,10 +180,12 @@ services:
   #     - "6379:6379"
   #   networks:
   #     - mlog
-  grafana:
-    image: grafana/grafana:11.0.0
-    ports:
-      - "3000:3000"
+  # grafana:
+  #   image: grafana/grafana:11.0.0
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - mlog 
   #   volumes:
   #     - ./conf/grafana/provisioning:/etc/grafana/provisioning
   #     - ./conf/grafana/dashboards:/var/lib/grafana/dashboards
@@ -196,6 +197,8 @@ services:
       - ./conf/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
       - "9090:9090"
+    networks:
+      - mlog 
   
   httpbin:
     image: kennethreitz/httpbin
