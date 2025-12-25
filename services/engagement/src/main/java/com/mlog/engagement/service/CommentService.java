@@ -4,6 +4,7 @@ import com.mlog.engagement.api.ApiUtil;
 import com.mlog.engagement.api.CommentsApi;
 import com.mlog.engagement.api.CommentsApiDelegate;
 import com.mlog.engagement.enitty.CommentEntity;
+import com.mlog.engagement.enitty.FollowEntity;
 import com.mlog.engagement.mapper.CommentMapper;
 import com.mlog.engagement.model.*;
 import com.mlog.engagement.openfeign.UserClient;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -95,17 +97,58 @@ public class CommentService implements CommentsApiDelegate {
     public ResponseEntity<CommentListResponse> getAllCommentsOnPost(Long postId,
                                                                      String cursor,
                                                                      Integer limit) {
-        List<CommentResponse> list = commentRepository.getByPostId(postId).stream().map(commentMapper::toCommentResponse).toList();
-        CommentListResponse commentListResponse = new CommentListResponse().data(list);
+        List<CommentEntity> commentEntities = commentRepository.getByPostId(postId);
+        List<CommentResponse> commentResponses = new ArrayList<>();
+
+        for (CommentEntity comment : commentEntities) {
+            ResponseEntity<UserResponse> userResponse = userClient.getUserById(comment.getUserId());
+
+            if (userResponse.getBody() == null) {
+                throw new RuntimeException("some user not found");
+            }
+
+            UserSummary userSummary = new UserSummary()
+                    .id(comment.getUserId())
+                    .avatarUrl(userResponse.getBody().getAvatarUrl())
+                    .username(userResponse.getBody().getUsername());
+
+            CommentResponse response = commentMapper.toCommentResponse(comment);
+            response.setUser(userSummary);
+
+            commentResponses.add(response);
+        }
+        CommentListResponse commentListResponse = new  CommentListResponse();
+        commentListResponse.setData(commentResponses);
+
         return new ResponseEntity<>(commentListResponse, HttpStatus.OK);
     }
 
     public ResponseEntity<CommentListResponse> getAllRepliesOfComment(UUID commentId,
                                                                        String cursor,
                                                                        Integer limit) {
-        List<CommentEntity> replies = commentRepository.findAllByParentId(commentId);
-        List<CommentResponse>  commentResponse = replies.stream().map(commentMapper::toCommentResponse).toList();
-        CommentListResponse commentListResponse = new CommentListResponse().data(commentResponse);
+        List<CommentEntity> commentEntities = commentRepository.findAllByParentId(commentId);
+        List<CommentResponse> commentResponses = new ArrayList<>();
+
+        for (CommentEntity comment : commentEntities) {
+            ResponseEntity<UserResponse> userResponse = userClient.getUserById(comment.getUserId());
+
+            if (userResponse.getBody() == null) {
+                throw new RuntimeException("some user not found");
+            }
+
+            UserSummary userSummary = new UserSummary()
+                    .id(comment.getUserId())
+                    .avatarUrl(userResponse.getBody().getAvatarUrl())
+                    .username(userResponse.getBody().getUsername());
+
+            CommentResponse response = commentMapper.toCommentResponse(comment);
+            response.setUser(userSummary);
+
+            commentResponses.add(response);
+        }
+        CommentListResponse commentListResponse = new  CommentListResponse();
+        commentListResponse.setData(commentResponses);
+
         return new ResponseEntity<>(commentListResponse, HttpStatus.OK);
     }
 }
